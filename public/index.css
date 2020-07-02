@@ -1,0 +1,65 @@
+/* HSLA not working on current version of Edge (44): use HSL instead */
+:root {
+  --widget-color-1: rgb(3,252,171);
+  --backg1: hsl(212, 80%, 50%);
+  --backg2: hsl(212, 60%, 50%);
+  --backg3: hsl(212, 50%, 50%);
+  --button1:hsl(212, 78%, 42%); /* #1867c0; */
+  --color1: hsl(212, 38%, 80%);
+  --color2: hsl(212, 38%, 85%);
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #b3ffb3;
+  display: flex;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+}
+
+.display-none {
+  display: none;
+}
+
+.t-flex {
+  display: flex;
+}
+
+.t-justify-start {
+  justify-content: start;
+}
+
+.t-justify-center {
+  justify-content: center;
+}
+
+.t-align-start {
+  align-items: start;
+}
+
+.t-align-center {
+  align-items: center;
+}
+
+/* undo Vuetify styling for <code> tag 
+  ...NOT WORKING */
+.v-application code {
+  all: unset;
+}
+
+/* this works because these properties 
+aren't specified in Vuetify */
+.v-application code {
+  margin-left: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  /* this works because of !important */
+  background-color: #85b1ff !important;
+  color: #2e456d !important;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <title>beta2</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="<%= BASE_URL %>index.css" >
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poiret+One|Open+Sans|Roboto:100,300,400,500,700,900">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  </head>
+
+  <body>
+
+    <noscript>
+      <strong>This application uses JavaScript. Please enable it to continue.</strong>
+    </noscript>
+
+    <div id="app"></div>
+    <!-- built files here -->
+
+
+    <!--*********** SCRIPTS ************-->
+      <script>
+        let bluesky = {};
+        let vm_beta2;
+        let canvas_module;
+      </script>
+      
+      <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+
+    <!-- Initialize Firebase -->
+    <!-- <script src="/__/firebase/init.js"></script> -->
+
+    <!-- Firebase initialization & config (custom) -->
+    <!-- note:  imported in main.js instead -->
+    <!-- <script src="../src/firebase_config.js">
+    </script> -->
+    
+    <!-- GSAP library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.4/gsap.min.js">
+    </script>
+
+    <!-- Project files (custom) -->
+    <!-- <script src="../src/components/Canvas/canvas.js" type="module"></script> -->
+
+  </body>
+
+</html>
