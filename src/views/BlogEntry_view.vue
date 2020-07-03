@@ -85,7 +85,8 @@
   import eventHub from '@/eventHub.js';
   import addElementTags from '@/setCarotPosition.js';
   import {nextTick} from 'vue';
-  import createDraggableEvents from '../dragAndDrop.js'
+  import createDraggableEvents from '@/dragAndDrop.js';
+  import svgIcons from '@/svgIcons.js';
 
   const mixin = {
   };
@@ -198,6 +199,11 @@
         if (action === 'resize') {
           el.style.height = `${el.scrollHeight}px`;
         } else el.style.height = 'initial';
+      },
+      addToTagslist: function() {
+        let svgIcon = svgIcons('openInNew');
+        let tag = {tag: '<a></a>', text: svgIcon, atEnd: false};
+        this.tagsList.push(tag)
       }
     },
     watch: {
@@ -213,6 +219,7 @@
     },
     created() {
       eventHub.$on('update_blogText', this.update_blogText)
+      this.addToTagslist()
     },
     mounted() {
       createDraggableEvents()
