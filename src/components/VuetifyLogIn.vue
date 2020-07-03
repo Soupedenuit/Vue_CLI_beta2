@@ -58,7 +58,7 @@
   function setInitialData() {
     return {
       emailText: 'igsu@rogers.com',
-      passwordText: 'allox007', //TO REMOVE VALUE
+      passwordText: '', 
       // loginBtnText: 'Log in',
       loginStatus: false
     }
