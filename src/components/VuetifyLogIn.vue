@@ -59,7 +59,6 @@
     return {
       emailText: 'igsu@rogers.com',
       passwordText: '', 
-      // loginBtnText: 'Log in',
       loginStatus: false
     }
   }
@@ -68,7 +67,6 @@
     data: () => (
       // emailText: '',
       // passwordText: '',
-      // loginBtn: 'Log in',
       // loginStatus: false
       setInitialData()
     ),
@@ -122,6 +120,7 @@
           .then(()=> eventHub.$emit('readDatabase', {uid: auth.currentUser.uid, uidChange: 'login'}))
           // .then(()=> {this.$router.push({name: 'blog'})})
           .then(()=>routerView.authInfo = 'sign in successful!')
+          .then(()=> this.$store.dispatch('updateLoginStatus', true))
           .then(()=> toggleRouterLinks('loggedIn'))
           .catch(function(err) {
             console.log(err);
@@ -146,6 +145,7 @@
           // .then(()=> {this.setBlogArticle('article deleted after logout!')})
           .then(()=> this.$store.dispatch('populateBlogArticle', 'logout'))
           .then(()=> this.$store.dispatch('resetState', this.$initialState.users))
+          .then(()=> this.$store.dispatch('updateLoginStatus', false))
           .then(toggleRouterLinks)
           // .then(()=> eventHub.$emit('readDatabase', {uid: null, uidChange: 'logout'}))
           // .then(()=> {this.$router.push({name: 'blog'})})

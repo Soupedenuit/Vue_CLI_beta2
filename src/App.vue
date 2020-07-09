@@ -22,6 +22,10 @@
         />
       </div>
 
+      <span id="login-text" class="align-self-end">
+        {{loginStatus}}{{loginText}}
+      </span>
+
       <v-spacer></v-spacer>
       
       <div class="router-links">
@@ -146,7 +150,15 @@
       routerLink_canvas: state => state.routerLinks.canvas,
       routerLink_video1: state => state.routerLinks.video1,
       routerLink_signin: state => state.routerLinks.signin,
-      routerLink_pdf1: state => state.routerLinks.pdf1
+      routerLink_pdf1: state => state.routerLinks.pdf1,
+      loginText: state=>state.users.user.email,
+      loginStatus: function(state) {
+        let text;
+        state.users.loginStatus ? 
+        text = 'Logged in as: ':
+        text = 'Please log in to use this application';
+        return text
+      }
     })
   };
 
@@ -165,6 +177,11 @@
 
   .router-link-active {
     text-decoration: underline;
+  }
+
+  #login-text {
+    margin-left: 20px;
+    font-size: 0.8em;
   }
 
   .hover:hover {

@@ -3,6 +3,7 @@ import {resetInitialState} from '@/initialState.js';
 export default {
   // namespaced: true,
   state: {
+    loginStatus: false,
     user: {
       name: 'no user (signed out)',
       email: '',
@@ -18,6 +19,9 @@ export default {
     RESET_STATE(state, payload) {
       // Object.assign(state, payload)
       resetInitialState(state, payload)
+    },
+    UPDATE_LOGIN_STATUS(state, payload) {
+      state.loginStatus = payload;
     }
   },
   actions: {
@@ -27,6 +31,9 @@ export default {
     },
     resetState({commit}, payload) {
       commit('RESET_STATE', payload)
+    },
+    updateLoginStatus({commit}, payload) {
+      commit('UPDATE_LOGIN_STATUS', payload)
     }
   }
 

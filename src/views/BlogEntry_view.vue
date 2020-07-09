@@ -419,5 +419,9 @@
     cursor: move;
   }
 
+  #drag-grabber:active {
+    transform: scale(1.2);
+  }
+
 
 </style>

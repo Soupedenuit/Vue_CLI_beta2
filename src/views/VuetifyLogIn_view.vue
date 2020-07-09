@@ -63,7 +63,6 @@
     },
     activated() {
       console.log('keep-alive activated');
-
     }
   }
   console.log('LogIn module lazy-loaded via router')
