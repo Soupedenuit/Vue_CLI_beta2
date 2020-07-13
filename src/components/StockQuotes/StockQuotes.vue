@@ -7,9 +7,6 @@
           <label for="input-ticker">Select stock ticker: </label>
           <input name="input-ticker" list="tickers-list" v-on:keydown.enter.prevent="submitTicker" type="text" id="input-ticker" placeholder="ticker..." pattern="[A-Z]+" value="" autocomplete="off" required />
           <datalist id="tickers-list">
-            <!-- <option v-for="ticks in tickersList"
-            v-bind:key="ticks.id" v-bind:value="ticks.text">
-            </option> -->
             <option v-for="(ticks, index) of tickersList1"
             v-bind:key="index" v-bind:value="ticks">
             </option>
@@ -63,6 +60,8 @@
 
 <script>
 
+  import eventHub from '@/eventHub.js';
+
   const targetId = document.getElementById.bind(document);
   const cachedDOM = {};
   // let outsideResolve;
@@ -70,9 +69,9 @@
   function cacheDOM() {
     cachedDOM.addTicker = targetId('add-ticker');
     cachedDOM.inputTicker = targetId('input-ticker');
+    // nav button to open stocks - not located in this file
     cachedDOM.stocksBtn = targetId('stocks-btn-svg-used');
     cachedDOM.stockQuotes = targetId('stock-quotes');
-    cachedDOM.test = 'cachedDOM test';
   }
 
   function addListeners() {
@@ -180,24 +179,7 @@
     return getStockQuotesModule.fetchQuotes({tickers: tickers, units: units, idNum: idNum})
   }
 
-  // console.log('hello from stockQuotesModule');
-   
-  const waitForfirebaseRDModuleToLoad = (function() {
-    return new Promise(function(resolve, reject) {
-      outsideResolve = resolve;
-    });
-  })()
-  .then(function() {
-    firebaseRDModule.testStockQuotesModule();
-    //ZZ
-  })
-
   let store = [];
-
-  // for console testing purposes only
-  const getStore = function() {
-    return store;
-  };
 
   // populates local store with Firebase stocks upon login (called in firebaseAuthModule)
   const setStore = function() {
@@ -222,20 +204,16 @@
   };
 
   export default {
-    
-
-
-  const stock_quotes_vue_component = {
     props: {
       title1: String
     },
-    template: stock_quotes_template,
     data: function() {
       return {
         cachedDOM1: { //NOT USED, NOT ACCESSIBLE
           addTicker: targetId('add-ticker'),
           inputTicker: targetId('input-ticker'),
-          test: 'cachedDOM1 Test'
+          test: 'cachedDOM1 Test',
+          stockQuotesStatus: false //indicates if stockQuotes window is open or not
         },
         stocksList1: [
           // {id: 0, text: '<p>stock 1</p>'},
@@ -244,7 +222,7 @@
           // {id: 0, text: '<th>ticker</th><th>close</th><th>position</th>'}
         ],
         stockIdNum: 101, //changed on login in to-do_firebase_RD
-        tickersList: [
+        tickersList: [ // NOT USED - SEE TickersList1
           {id: 0, text: 'ACB.TO'},
           {id: 1, text: 'AUSA.CN'},
           {id: 2, text: 'BB.TO'},
@@ -367,6 +345,9 @@
       getStocksList1() {
         console.log(this.stocksList1[0].text);
         return this.stocksList1;
+      },
+      emitMethod() {
+        eventHub.$emit('alpha')
       }
     },
     mounted() {
@@ -376,77 +357,19 @@
         defineProperties()
         console.log('hello from mounted');
         console.log(this.$root.cachedDOM2.test);
-        emitHub.$on('alpha', this.getStocksList1);
+        eventHub.$on('alpha', this.getStocksList1);
       })
     }
+  }
   
-  
-  </script>
+
+</script>
 
 
-  const emitHub = new Vue();
-
-  const stock_quotes_vue_instance = new Vue({
-    el: '#stock-quotes-vue-component',
-    components: {
-      'stock-quotes': stock_quotes_vue_component
-    },
-    data: {
-      cachedDOM2: { //NOT USED, NOT ACCESSIBLE
-        addTicker: targetId('add-ticker'),
-        inputTicker: targetId('input-ticker'),
-        test: 'cachedDOM2 test'
-      },
-      stocksList2: [ //NOT USED, NOT ACCESSIBLE
-        {id: 0, text: '<p>stock 4</p>'},
-        {id: 1, text: '<p>stock 5</p>'},
-        {id: 2, text: '<p>stock 6</p>'}
-      ],
-      login: false, //not used,
-      stockQuotesStatus: false //indicates if stockQuotes window is open or not
-    },
-    methods: {
-      emitMethod() {
-        emitHub.$emit('alpha')
-      }
-    },
-    mounted() {
-      this.$nextTick(function() {
-        console.log(this.$refs.stockQuotes.tickersList1);
-      })
-    }
-  });
-
-  // Using Vue's v-on directive instead of adding event listener:
-  // alpha.cachedDOM1.addTicker.addEventListener('click', submitTicker, false);
-
-  // return {
-  //   cachedDOM,
-  //   clearStocksStore: clearStore,
-  //   emitMethod: stock_quotes_vue_instance.emitMethod,
-  //   openStockQuotes,
-  //   outsideResolve,
-  //   setStocksStore: setStore,
-  //   stock_quotes_vue_component,
-  //   stock_quotes_vue_instance,
-  //   store: getStore
-  // }
+//Add to line 1 of the template to hide the stocks container:
+// <div id="stock-quotes" class="display-none opacity-zero">
 
 
+<style scoped>
 
-/*
-Add to line 1 of the template to hide the stocks container:
-<div id="stock-quotes" class="display-none opacity-zero">
-*/
-
-
-/*
-NOTES:
-You can access the component via the parent instance as     follows:
-
-A. By using the $refs instance property (add attribute ref to your component in HTML tag). In our case we named it "stockQuotes":
-stockQuotesModule.stock_quotes_vue_instance.$refs.stockQuotes
-
-B. By using the $emit and $on instance methods. It seems though that you cannot get a return value from its callback function.
-
-*/
+</style>
