@@ -61,6 +61,9 @@
 <script>
 
   import eventHub from '@/eventHub.js';
+  import fetchQuotes from './get_stock_quotes';
+  import fetchUsdExchangeRate from './get_USD_exchange_rate';
+  import {convertToDollars} from './convert_to_dollars.js';
 
   const targetId = document.getElementById.bind(document);
   const cachedDOM = {};
@@ -69,7 +72,7 @@
   function cacheDOM() {
     cachedDOM.addTicker = targetId('add-ticker');
     cachedDOM.inputTicker = targetId('input-ticker');
-    // nav button to open stocks - not located in this file
+    // NAV button to open stocks - not located in this file
     cachedDOM.stocksBtn = targetId('stocks-btn-svg-used');
     cachedDOM.stockQuotes = targetId('stock-quotes');
   }
@@ -101,7 +104,7 @@
   
   // Step 1 (called by submitTicker)
   function fetchQuotesAndAddToList({idNum, tickers, units}) {
-    getStockQuotesModule.fetchQuotes({tickers: tickers, units: units, idNum: idNum})
+    fetchQuotes({tickers: tickers, units: units, idNum: idNum})
     .then(function(value) { //value is [tickers[i], units, idNum, price, position];
       addTickerQuoteToList({quote: value, result: 'yes'})
     })
@@ -176,7 +179,7 @@
     let idNum = key;
     let tickers = [val.ticker]; //fetchQuotes accepts an array
     let units = val.units;
-    return getStockQuotesModule.fetchQuotes({tickers: tickers, units: units, idNum: idNum})
+    return fetchQuotes({tickers: tickers, units: units, idNum: idNum})
   }
 
   let store = [];
@@ -184,7 +187,6 @@
   // populates local store with Firebase stocks upon login (called in firebaseAuthModule)
   const setStore = function() {
     let stocks = firebaseRDModule.firebaseDataStore.refToDoItemsSnapshotStocks.items || undefined;
-    stock_quotes_vue_instance.login = true; //not used
     if ( stocks ) {
       Object.keys(stocks).forEach(function(x) {
         if ( x !== 'idNum' ) {
@@ -209,43 +211,8 @@
     },
     data: function() {
       return {
-        cachedDOM1: { //NOT USED, NOT ACCESSIBLE
-          addTicker: targetId('add-ticker'),
-          inputTicker: targetId('input-ticker'),
-          test: 'cachedDOM1 Test',
-          stockQuotesStatus: false //indicates if stockQuotes window is open or not
-        },
-        stocksList1: [
-          // {id: 0, text: '<p>stock 1</p>'},
-          // {id: 1, text: '<p>stock 2</p>'},
-          // {id: 2, text: '<p>stock 3</p>'}
-          // {id: 0, text: '<th>ticker</th><th>close</th><th>position</th>'}
-        ],
+        stocksList1: [],
         stockIdNum: 101, //changed on login in to-do_firebase_RD
-        tickersList: [ // NOT USED - SEE TickersList1
-          {id: 0, text: 'ACB.TO'},
-          {id: 1, text: 'AUSA.CN'},
-          {id: 2, text: 'BB.TO'},
-          {id: 3, text: 'BTC-USD'},
-          {id: 4, text: 'BKE'},
-          {id: 5, text: 'GGN'},
-          {id: 6, text: 'HCC'},
-          {id: 7, text: 'MEDFF'},
-          {id: 8, text: 'MLI'},
-          {id: 9, text: 'MMJ.CN'},
-          {id: 10, text: 'SNN.CN'},
-          {id: 11, text: 'VIVO.V'},
-          {id: 12, text: 'WERN'},
-          {id: 13, text: 'XRX'},
-          {id: 14, text: '_____'},
-          {id: 15, text: 'AAPL'},
-          {id: 16, text: 'AMZN'},
-          {id: 17, text: 'FB'},
-          {id: 18, text: 'GOOG'},
-          {id: 19, text: 'NFLX'},
-          {id: 20, text: 'TWTR'},
-          {id: 21, text: 'WORK'}
-        ],
         tickersList1: [
           'ACB.TO',
           'AUSA.CN',
@@ -295,7 +262,7 @@
         let total = this.positionsTotal;
         let updateTotalCAD = this.updateTotalCAD;
         let updateTotalCAD_fail = this.updateTotalCAD_fail;
-        getUSDexchangeRateModule.fetchUSDexchangeRate()
+        fetchUsdExchangeRate()
         .then(function(value) {
           let canadianVal = total * value;
           updateTotalCAD(canadianVal) 
