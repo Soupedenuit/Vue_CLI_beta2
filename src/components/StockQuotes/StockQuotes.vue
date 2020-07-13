@@ -7,9 +7,6 @@
           <label for="input-ticker">Select stock ticker: </label>
           <input name="input-ticker" list="tickers-list" v-on:keydown.enter.prevent="submitTicker" type="text" id="input-ticker" placeholder="ticker..." pattern="[A-Z]+" value="" autocomplete="off" required />
           <datalist id="tickers-list">
-            <!-- <option v-for="ticks in tickersList"
-            v-bind:key="ticks.id" v-bind:value="ticks.text">
-            </option> -->
             <option v-for="(ticks, index) of tickersList1"
             v-bind:key="index" v-bind:value="ticks">
             </option>
@@ -63,6 +60,11 @@
 
 <script>
 
+  import eventHub from '@/eventHub.js';
+  import fetchQuotes from './get_stock_quotes';
+  import fetchUsdExchangeRate from './get_USD_exchange_rate';
+  import {convertToDollars} from './convert_to_dollars.js';
+
   const targetId = document.getElementById.bind(document);
   const cachedDOM = {};
   // let outsideResolve;
@@ -70,9 +72,9 @@
   function cacheDOM() {
     cachedDOM.addTicker = targetId('add-ticker');
     cachedDOM.inputTicker = targetId('input-ticker');
+    // NAV button to open stocks - not located in this file
     cachedDOM.stocksBtn = targetId('stocks-btn-svg-used');
     cachedDOM.stockQuotes = targetId('stock-quotes');
-    cachedDOM.test = 'cachedDOM test';
   }
 
   function addListeners() {
@@ -102,7 +104,7 @@
   
   // Step 1 (called by submitTicker)
   function fetchQuotesAndAddToList({idNum, tickers, units}) {
-    getStockQuotesModule.fetchQuotes({tickers: tickers, units: units, idNum: idNum})
+    fetchQuotes({tickers: tickers, units: units, idNum: idNum})
     .then(function(value) { //value is [tickers[i], units, idNum, price, position];
       addTickerQuoteToList({quote: value, result: 'yes'})
     })
@@ -177,32 +179,14 @@
     let idNum = key;
     let tickers = [val.ticker]; //fetchQuotes accepts an array
     let units = val.units;
-    return getStockQuotesModule.fetchQuotes({tickers: tickers, units: units, idNum: idNum})
+    return fetchQuotes({tickers: tickers, units: units, idNum: idNum})
   }
 
-  // console.log('hello from stockQuotesModule');
-   
-  const waitForfirebaseRDModuleToLoad = (function() {
-    return new Promise(function(resolve, reject) {
-      outsideResolve = resolve;
-    });
-  })()
-  .then(function() {
-    firebaseRDModule.testStockQuotesModule();
-    //ZZ
-  })
-
   let store = [];
-
-  // for console testing purposes only
-  const getStore = function() {
-    return store;
-  };
 
   // populates local store with Firebase stocks upon login (called in firebaseAuthModule)
   const setStore = function() {
     let stocks = firebaseRDModule.firebaseDataStore.refToDoItemsSnapshotStocks.items || undefined;
-    stock_quotes_vue_instance.login = true; //not used
     if ( stocks ) {
       Object.keys(stocks).forEach(function(x) {
         if ( x !== 'idNum' ) {
@@ -222,52 +206,13 @@
   };
 
   export default {
-    
-
-
-  const stock_quotes_vue_component = {
     props: {
       title1: String
     },
-    template: stock_quotes_template,
     data: function() {
       return {
-        cachedDOM1: { //NOT USED, NOT ACCESSIBLE
-          addTicker: targetId('add-ticker'),
-          inputTicker: targetId('input-ticker'),
-          test: 'cachedDOM1 Test'
-        },
-        stocksList1: [
-          // {id: 0, text: '<p>stock 1</p>'},
-          // {id: 1, text: '<p>stock 2</p>'},
-          // {id: 2, text: '<p>stock 3</p>'}
-          // {id: 0, text: '<th>ticker</th><th>close</th><th>position</th>'}
-        ],
+        stocksList1: [],
         stockIdNum: 101, //changed on login in to-do_firebase_RD
-        tickersList: [
-          {id: 0, text: 'ACB.TO'},
-          {id: 1, text: 'AUSA.CN'},
-          {id: 2, text: 'BB.TO'},
-          {id: 3, text: 'BTC-USD'},
-          {id: 4, text: 'BKE'},
-          {id: 5, text: 'GGN'},
-          {id: 6, text: 'HCC'},
-          {id: 7, text: 'MEDFF'},
-          {id: 8, text: 'MLI'},
-          {id: 9, text: 'MMJ.CN'},
-          {id: 10, text: 'SNN.CN'},
-          {id: 11, text: 'VIVO.V'},
-          {id: 12, text: 'WERN'},
-          {id: 13, text: 'XRX'},
-          {id: 14, text: '_____'},
-          {id: 15, text: 'AAPL'},
-          {id: 16, text: 'AMZN'},
-          {id: 17, text: 'FB'},
-          {id: 18, text: 'GOOG'},
-          {id: 19, text: 'NFLX'},
-          {id: 20, text: 'TWTR'},
-          {id: 21, text: 'WORK'}
-        ],
         tickersList1: [
           'ACB.TO',
           'AUSA.CN',
@@ -317,7 +262,7 @@
         let total = this.positionsTotal;
         let updateTotalCAD = this.updateTotalCAD;
         let updateTotalCAD_fail = this.updateTotalCAD_fail;
-        getUSDexchangeRateModule.fetchUSDexchangeRate()
+        fetchUsdExchangeRate()
         .then(function(value) {
           let canadianVal = total * value;
           updateTotalCAD(canadianVal) 
@@ -367,6 +312,9 @@
       getStocksList1() {
         console.log(this.stocksList1[0].text);
         return this.stocksList1;
+      },
+      emitMethod() {
+        eventHub.$emit('alpha')
       }
     },
     mounted() {
@@ -376,77 +324,19 @@
         defineProperties()
         console.log('hello from mounted');
         console.log(this.$root.cachedDOM2.test);
-        emitHub.$on('alpha', this.getStocksList1);
+        eventHub.$on('alpha', this.getStocksList1);
       })
     }
+  }
   
-  
-  </script>
+
+</script>
 
 
-  const emitHub = new Vue();
-
-  const stock_quotes_vue_instance = new Vue({
-    el: '#stock-quotes-vue-component',
-    components: {
-      'stock-quotes': stock_quotes_vue_component
-    },
-    data: {
-      cachedDOM2: { //NOT USED, NOT ACCESSIBLE
-        addTicker: targetId('add-ticker'),
-        inputTicker: targetId('input-ticker'),
-        test: 'cachedDOM2 test'
-      },
-      stocksList2: [ //NOT USED, NOT ACCESSIBLE
-        {id: 0, text: '<p>stock 4</p>'},
-        {id: 1, text: '<p>stock 5</p>'},
-        {id: 2, text: '<p>stock 6</p>'}
-      ],
-      login: false, //not used,
-      stockQuotesStatus: false //indicates if stockQuotes window is open or not
-    },
-    methods: {
-      emitMethod() {
-        emitHub.$emit('alpha')
-      }
-    },
-    mounted() {
-      this.$nextTick(function() {
-        console.log(this.$refs.stockQuotes.tickersList1);
-      })
-    }
-  });
-
-  // Using Vue's v-on directive instead of adding event listener:
-  // alpha.cachedDOM1.addTicker.addEventListener('click', submitTicker, false);
-
-  // return {
-  //   cachedDOM,
-  //   clearStocksStore: clearStore,
-  //   emitMethod: stock_quotes_vue_instance.emitMethod,
-  //   openStockQuotes,
-  //   outsideResolve,
-  //   setStocksStore: setStore,
-  //   stock_quotes_vue_component,
-  //   stock_quotes_vue_instance,
-  //   store: getStore
-  // }
+//Add to line 1 of the template to hide the stocks container:
+// <div id="stock-quotes" class="display-none opacity-zero">
 
 
+<style scoped>
 
-/*
-Add to line 1 of the template to hide the stocks container:
-<div id="stock-quotes" class="display-none opacity-zero">
-*/
-
-
-/*
-NOTES:
-You can access the component via the parent instance as     follows:
-
-A. By using the $refs instance property (add attribute ref to your component in HTML tag). In our case we named it "stockQuotes":
-stockQuotesModule.stock_quotes_vue_instance.$refs.stockQuotes
-
-B. By using the $emit and $on instance methods. It seems though that you cannot get a return value from its callback function.
-
-*/
+</style>
