@@ -30,4 +30,11 @@ auth.onAuthStateChanged(user => {
 const database = firebase.database();
 bluesky.database = database; //global access to database
 
+// Firebase Storage setup
+// Not available in Node.js
+// const storage = firebase.storage();
+// bluesky.storage = storage; //global access to storage
+
+
 export {auth, database}
+// export {auth, database, storage}

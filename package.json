@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vue/composition-api": "^0.5.0",
+    "chess-web-api": "^1.0.10",
     "core-js": "^3.6.5",
     "node-fetch": "^2.6.0",
     "pdfobject": "^2.1.1",

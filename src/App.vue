@@ -79,12 +79,12 @@
         :class="{deactivated: routerLink_signin}">
         Signin</router-link> | 
         <router-link 
-        to="/pdf1" 
+        to="/chess" 
         tag="span" 
         tabindex="0"
         class="hover"
         :class="{deactivated: routerLink_pdf1}">
-        PDF</router-link>
+        Chess</router-link>
       </div>
 
       <!-- <v-spacer></v-spacer> -->

@@ -71,11 +71,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/pdf1',
-    name: 'pdf1',
+    path: '/chess',
+    name: 'chess',
     props: true,
     component: () =>
-      import('../views/Pdf1_view.vue'),
+      import('../views/Chess_view.vue'),
     meta: { requiresAuth: false }
   }
 ];
@@ -123,10 +123,10 @@ router.beforeEach((to, from, next) => {
   let currentUser = auth.currentUser;
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   console.log('requiresAuth: ', requiresAuth);
-  if ((to.name === 'blog_entry') || (to.name === 'blog_view')) {
+  if ((to.name === 'blog_entry') || (to.name === 'blog_view') || (to.name === 'chess')) {
     hidePositionDisplay('hide')
   } 
-  if ((to.name !== 'blog_entry') && (to.name !== 'blog_view')) {
+  if ((to.name !== 'blog_entry') && (to.name !== 'blog_view') && (to.name !== 'chess')) {
     hidePositionDisplay()
   } 
   if (requiresAuth && !currentUser) {

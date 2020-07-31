@@ -56,7 +56,8 @@ body {
 /* this works because these properties 
 aren't specified in Vuetify */
 .v-application code {
-  margin-left: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
   padding-left: 5px;
   padding-right: 5px;
   /* this works because of !important */
