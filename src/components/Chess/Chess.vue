@@ -1,11 +1,14 @@
 <template>
   <main>
-    <input type="text" autocomplete="on" v-model="username" 
+    <!-- switched to using a prop -->
+    <!-- <input type="text" autocomplete="on" v-model="username"  -->
+    <input type="text" autocomplete="on" v-model="user" 
     v-on:keydown.enter="getChessData" />
 
     <article ref="chessGames" v-for="(game, index) in chessDataResult"
     v-bind:key="index" >
-      <span>user: {{username}}</span>
+      <!-- <span>user: {{username}}</span> -->
+      <span>user: {{user}}</span>
       <h2>{{ index }}</h2>
       <ul v-if="showData">
         <li ref="chessData" v-for="(stat, index) in game"
@@ -25,6 +28,7 @@
 <script>
   import getChessAPIData from './Chess.com_API.js';
   import {convertToUTC} from '@/dateConverter.js';
+  import {sortObjectByKeys} from '@/object_sort.js';
   import {nextTick} from 'vue';
 
   export default {
@@ -33,12 +37,18 @@
       chessData: null,
       showData: false,
       showError: true,
-      username: 'knightofthedead',
+      //switched to using a prop:
+      // username: 'knightofthedead', 
       interval_a: null
     }),
+    props: {
+      delay: String,
+      user: String
+    },
     computed: {
       chessDataResult() {
         if (this.chessData) {
+          //this doesn't do anything, as getChessAPIData() always returns a result or an error, and this.chessData will be this result or error - see **
           if (this.chessData.error) {
             let errorMessage = {
               statusCode: this.chessData.statusCode,
@@ -48,22 +58,32 @@
             this.showError = true;
             // return errorMessage;
             return this.chessData;
-          } else {
+          } 
+          // ** it will always be else here:
+          else {
               this.showData = true;
               this.showError = false;
               return this.chessData;
           } 
-        } else return {error: 'data not retrieved'}
+        } else return {pending: 'data being retrieved...'}
       }
     },
     methods: {
       getChessData() {
         let this1 = this;
-        getChessAPIData(this.username)
+        //switched to using a prop:
+        // getChessAPIData(this.username)
+        getChessAPIData(this.user)
         .then(function(result) {
           this1.chessData = result;
         })
-        //this doesn't do anything, as getChessAPIData() always returns either a result or an error
+        .then(function() {
+          this1.sortChessData()
+        })
+        .then(function() {
+          this1.findLatestData()
+        })
+        //this doesn't do anything, as getChessAPIData() always returns (a result or an error)
         .catch(function(error) {
           this1.chessData = error
         })
@@ -77,12 +97,11 @@
         this.chessData = val;
       },
       findLatestData() {
-        // let chessGames = this.$refs.chessGames;
-        // let liTags = document.getElementsByTagName('li');
         let liTags = this.$refs.chessData;
         let latestDateIndex = 0;
         let latestUtcDate = 0;
         let utcDate;
+        let liTarget;
         let regx = /latestDate: /gi;
         liTags.forEach(function(li, index) {
           if (li.innerText.match('latestDate')) {
@@ -95,33 +114,46 @@
             }
           }
         })
-        liTags[latestDateIndex].style.fontWeight = 'bolder';
+        liTarget = liTags[latestDateIndex];
+        liTarget.style.fontWeight = 'bolder';
+        // console.log(liTarget.parentNode.parentNode);
+      },
+      sortChessData(evalKey = 'latestDate') {
+        let sortedChessData = sortObjectByKeys(this.chessData, evalKey);
+        this.chessData = sortedChessData;
       }
     },
     created() {
-      this.getChessData()
-      bluesky.chessData = this.retrieveLocalChessData;
+      // this.getChessData()
+      // this.sortChessData()
+      // setTimeout(this.getChessData, Number(this.delay))
+      // setTimeout(this.sortChessData, Number(this.delay) + 500)
+      //defined in index.html:
+      // bluesky.chessData = {}; 
+      bluesky.chessData[this.user] = this.retrieveLocalChessData;
       bluesky.chessDataSet = this.setLocalChessData;
       bluesky.findLatestData = this.findLatestData;
+      bluesky.chessDataSort = this.sortChessData;
     },
     mounted() {
       let this1 = this;
-      this.$nextTick().then(function() {
-        // this1.interval_a = setInterval(this1.getChessData, 1000*60)
-        // console.log('this: ', this);
+      this.$nextTick()
+      .then(function() {
         console.log('this1: ', this1);
-        this1.interval_a = setInterval(function() {
-          this1.getChessData()
-          console.log('interval_a');
-        }, 1000*10)
+        this1.interval_a = setInterval(this1.getChessData, 1000*60)
+      })
+      .then(function() {
+        console.log('getting chess data');
+        this1.getChessData()
       })
     },
-    beforeUpdate() {
-      let this1 = this;
-      this.$nextTick().then(function() {
-        this1.findLatestData()
-      })
-    },
+    // beforeUpdate() {
+    //   let this1 = this;
+    //   this.$nextTick().then(function() {
+    //     this1.findLatestData()
+    //     // this1.sortChessData()
+    //   })
+    // },
     beforeDestroy() {
       //this won't be called because our router is set to keep routes alive
       console.log('beforeDestroy() called');

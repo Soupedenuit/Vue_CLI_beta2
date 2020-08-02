@@ -44,6 +44,7 @@ function printLatestGamesData(response, error, gameType) {
 //////////////////////////////////////////////////////////
 
 let outsideResolve;
+let outsideReject;
 
 function getLatestGamesData(response, error) {
   if (!error && response.statusCode === 200) {
@@ -94,7 +95,7 @@ function getLatestGamesData(response, error) {
         code: error.statusCode,
         message: error.message
       }
-      outsideResolve(errorMessage)
+      outsideReject(errorMessage)
     }
 }
 
@@ -102,6 +103,7 @@ function fetchChessAPIData(username) {
   // reject unused here - to follow up?
   return new Promise(function(resolve, reject) { 
     outsideResolve = resolve;
+    outsideReject = reject;
     chessAPI.dispatch(chessAPI.getPlayerStats, getLatestGamesData, [username], {}, 1, [])
   })
 }
