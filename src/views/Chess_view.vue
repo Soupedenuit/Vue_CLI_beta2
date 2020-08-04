@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- delay for getting chess data - cannot both be at the same time:  -->
-    <Chess delay="200" user="knightofthedead" />
+    <Chess user="knightofthedead" />
     <!-- <Chess delay="800" user="sstoehr" /> -->
   </div>
 </template>

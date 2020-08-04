@@ -2,13 +2,20 @@
   <main>
     <!-- switched to using a prop -->
     <!-- <input type="text" autocomplete="on" v-model="username"  -->
-    <input type="text" autocomplete="on" v-model="user" 
-    v-on:keydown.enter="getChessData" />
+    <form action="" method="" autocomplete="on">
+      <label for="userNameInput">Username: </label>
+      <input name="userNameInput" type="text" autocomplete="on" 
+      v-model="userName" 
+      v-on:keydown.enter.prevent="getChessData">
+      <!-- <select name="userName" id="user-name" v-on:keydown.enter.prevent="getChessData">
+        <option value="knightofthedead">knightofthedead</option>
+        <option value="sstoehr">sstoehr</option>
+      </select> -->
+    </form>
 
     <article ref="chessGames" v-for="(game, index) in chessDataResult"
     v-bind:key="index" >
-      <!-- <span>user: {{username}}</span> -->
-      <span>user: {{user}}</span>
+      <span>user: {{userName}}</span>
       <h2>{{ index }}</h2>
       <ul v-if="showData">
         <li ref="chessData" v-for="(stat, index) in game"
@@ -37,15 +44,23 @@
       chessData: null,
       showData: false,
       showError: true,
-      //switched to using a prop:
-      // username: 'knightofthedead', 
-      interval_a: null
+      interval_a: null,
+      activated: true, //to prevent activated hook from setting interval on initial load
+      userName: null
     }),
     props: {
       delay: String,
       user: String
     },
     computed: {
+      // userName: {
+      //   get() {
+      //     return this.user
+      //   },
+      //   set(val) {
+      //     this.user = val
+      //   }
+      // },
       chessDataResult() {
         if (this.chessData) {
           //this doesn't do anything, as getChessAPIData() always returns a result or an error, and this.chessData will be this result or error - see **
@@ -69,16 +84,18 @@
       }
     },
     methods: {
+      getUser() {
+        this.userName = this.user;
+      },
       getChessData() {
         let this1 = this;
         //switched to using a prop:
-        // getChessAPIData(this.username)
-        getChessAPIData(this.user)
+        getChessAPIData(this.userName)
         .then(function(result) {
           this1.chessData = result;
         })
         .then(function() {
-          this1.sortChessData()
+          this1.sortChessData( )
         })
         .then(function() {
           this1.findLatestData()
@@ -91,6 +108,9 @@
       //for global access using "bluesky" variable
       retrieveLocalChessData() { 
         return this.chessData
+      },
+      retrieveInterval_a() { 
+        return this.interval_a
       },
       //for global access using "bluesky" variable
       setLocalChessData(val) {
@@ -124,13 +144,15 @@
       }
     },
     created() {
+      this.getUser()
       // this.getChessData()
       // this.sortChessData()
       // setTimeout(this.getChessData, Number(this.delay))
       // setTimeout(this.sortChessData, Number(this.delay) + 500)
       //defined in index.html:
       // bluesky.chessData = {}; 
-      bluesky.chessData[this.user] = this.retrieveLocalChessData;
+      bluesky.chessData[this.userName] = this.retrieveLocalChessData;
+      bluesky.interval_a = this.retrieveInterval_a;
       bluesky.chessDataSet = this.setLocalChessData;
       bluesky.findLatestData = this.findLatestData;
       bluesky.chessDataSort = this.sortChessData;
@@ -139,28 +161,29 @@
       let this1 = this;
       this.$nextTick()
       .then(function() {
-        console.log('this1: ', this1);
-        this1.interval_a = setInterval(this1.getChessData, 1000*60)
+        this1.getChessData()
+        // console.log('this1: ', this1);
+        // console.log('getting chess data');
       })
       .then(function() {
-        console.log('getting chess data');
-        this1.getChessData()
+        this1.interval_a = setInterval(this1.getChessData, 1000*60*5);
       })
     },
-    // beforeUpdate() {
-    //   let this1 = this;
-    //   this.$nextTick().then(function() {
-    //     this1.findLatestData()
-    //     // this1.sortChessData()
-    //   })
-    // },
     beforeDestroy() {
       //this won't be called because our router is set to keep routes alive
       console.log('beforeDestroy() called');
     },
     deactivated() {
-      console.log('deactivated called!');
+      console.log('interval_a was deactivated');
       clearInterval(this.interval_a)
+      this.activated = false;
+    },
+    activated() {
+      if (!this.activated) {
+        this.interval_a = setInterval(this.getChessData, 1000*60*5)
+        console.log('interval_a was reactivated');
+      }
+      this.activated = true;
     }
   }
 
@@ -185,6 +208,10 @@
     align-items: center;
     background-color: #312e2b;
     padding: 10px 0 5px 0;
+  }
+
+  label {
+    color: #ebecd0;
   }
 
   input {
