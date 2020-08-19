@@ -1,12 +1,12 @@
 {
   "rules": {
-    "anonymous": {
-      ".read": "auth != null",
-      ".write": "auth != null"
-    },
     "$uid": {
       ".read": "$uid === auth.uid",
       ".write": "$uid === auth.uid"
-    }
+    },
+    "public": {
+      ".read": true,
+      ".write": "auth.uid === 'PCCqEZfMqcSVkdugmlfE8P5eItp2'"
+    } 
   }
 }
