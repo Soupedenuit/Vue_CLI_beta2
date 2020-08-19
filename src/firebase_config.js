@@ -11,7 +11,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+// NO LONGER WORKING (AUG 16 2020)
+// "Uncaught TypeError: firebase.analytics is not a function"
+// firebase.analytics(); 
 
 // Firebase Authentication setup
 const auth = firebase.auth();

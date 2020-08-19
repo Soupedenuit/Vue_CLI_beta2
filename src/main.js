@@ -24,8 +24,6 @@ vm_beta2 = new Vue({
   router,
   store,
   vuetify,
-  methods: {
-  },
   mounted() {
     console.log(this.$vuetify.application)
   },
