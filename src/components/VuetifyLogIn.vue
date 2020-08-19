@@ -57,7 +57,7 @@
 
   function setInitialData() {
     return {
-      emailText: 'igsu@rogers.com',
+      emailText: '',
       passwordText: '', 
       loginStatus: false
     }
