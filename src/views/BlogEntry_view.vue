@@ -114,6 +114,8 @@
         {tag: 'div', text: '<div></div>', atEnd: false},
         {tag: 'p', text: '<p></p>', atEnd: false},
         {tag: 'br', text: '<br>', atEnd: false},
+        {tag: '<', text: '&lt;', atEnd: false},
+        {tag: '>', text: '&gt;', atEnd: false},
       ]
     }),
     filters: {

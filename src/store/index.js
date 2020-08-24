@@ -23,7 +23,7 @@ export default new Vuex.Store({
       canvas: false,
       video1: false,
       signin: false,
-      pdf1: false
+      chess: false
     }
   },
   getters: {

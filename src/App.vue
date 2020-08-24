@@ -28,7 +28,7 @@
 
       <v-spacer></v-spacer>
       
-      <div class="router-links">
+      <!-- <div class="router-links">
         <router-link 
         to="/login" 
         tag="span" 
@@ -41,7 +41,7 @@
         tag="span"
         tabindex="0"
         class="hover" 
-        :class="{deactivated: routerLinkHome}">
+        :class="{deactivated: routerLink_home}">
         Home</router-link> | 
         <router-link 
         :to="{name: 'blog_entry'}" 
@@ -83,21 +83,58 @@
         tag="span" 
         tabindex="0"
         class="hover"
-        :class="{deactivated: routerLink_pdf1}">
+        :class="{deactivated: routerLink_chess}">
         Chess</router-link>
+      </div> -->
+
+      <div class="router-links desktop">
+        <router-link v-for="(routerLink, i) in routerLinks"
+        :key="routerLink.name"
+        :to="routerLink.link" 
+        tag="span" 
+        tabindex="0"
+        class="hover"
+        :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}">
+          <span>{{ routerLink.name }}</span>
+          <span v-if="i < 7"> | </span>
+        </router-link>
       </div>
 
-      <!-- <v-spacer></v-spacer> -->
+      <div class="router-links mobile">
+        <v-menu
+          :disabled="disabled"
+          :absolute="absolute"
+          :open-on-hover="openOnHover"
+          :close-on-click="closeOnClick"
+          :close-on-content-click="closeOnContentClick"
+          :offset-x="offsetX"
+          :offset-y="offsetY"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Menu
+            </v-btn>
+          </template>
+
+          <router-link v-for="(routerLink) in routerLinks"
+          :key="routerLink.name"
+          :to="routerLink.link" 
+          tag="li" 
+          tabindex="0"
+          class="hover menu"
+          :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}">
+            <span>{{ routerLink.name }}</span>
+          </router-link>
+        </v-menu>
+      </div>
 
       <SessionTime ref="session"/>
-      <!-- <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
+
     </v-app-bar>
 
 
@@ -139,18 +176,68 @@
       // HelloWorld
     },
     data: () => ({
-      slotText: 'slot text from data'
+      slotText: 'slot text from data',
+      routerLinks: [
+        {
+        name: 'Login',
+        link: '/login',
+        deactivated: 'routerLink_login'
+        },
+        {
+        name: 'Home',
+        link: '/home',
+        deactivated: 'routerLink_home'
+        },
+        {
+        name: 'Blog Entry',
+        link: '/blog_entry',
+        deactivated: 'routerLink_blog_entry'
+        },
+        {
+        name: 'Blog View',
+        link: '/blog_view',
+        deactivated: 'routerLink_blog_view'
+        },
+        {
+        name: 'Canvas',
+        link: '/canvas',
+        deactivated: 'routerLink_canvas'
+        },
+        {
+        name: 'Video1',
+        link: '/video1',
+        deactivated: 'routerLink_video1'
+        },
+        {
+        name: 'Signin',
+        link: '/signin',
+        deactivated: 'routerLink_signin'
+        },
+        {
+        name: 'Chess',
+        link: '/chess',
+        deactivated: 'routerLink_chess'
+        }
+      ],
+      disabled: false,
+      absolute: false,
+      openOnHover: false,
+      value: false,
+      closeOnClick: true,
+      closeOnContentClick: true,
+      offsetX: false,
+      offsetY: true,
     }),
     computed: mapState({
       displayNone: 'displayNone',
       routerLink_login: state => state.routerLinks.login,
-      routerLinkHome: state => state.routerLinks.home,
+      routerLink_home: state => state.routerLinks.home,
       routerLink_blog_entry: state => state.routerLinks.blog_entry,
       routerLink_blog_view: state => state.routerLinks.blog_view,
       routerLink_canvas: state => state.routerLinks.canvas,
       routerLink_video1: state => state.routerLinks.video1,
       routerLink_signin: state => state.routerLinks.signin,
-      routerLink_pdf1: state => state.routerLinks.pdf1,
+      routerLink_chess: state => state.routerLinks.pdf1,
       loginText: state=>state.users.user.email,
       loginStatus: function(state) {
         let text;
@@ -159,7 +246,21 @@
         text = 'Please log in to use this application';
         return text
       }
-    })
+    }),
+    methods: {
+      getDeactivatedStatus: function(entry) {
+        console.log(entry);
+        return this[entry]
+      },
+      getDisplay() {
+        console.log('getDisplay called!');
+        return false
+      }
+    },
+    created() { console.log('created!')},
+    mounted() { console.log('mounted!')},
+    beforeUpdate() { console.log('beforeUpdate!')},
+    updated() { console.log('updated!')},
   };
 
 </script>
@@ -171,11 +272,7 @@
     margin-top: 10px;
   }
 
-  .router-links {
-    width: 500px;
-  }
-
-  .router-link-active {
+  .router-link-active span:first-child {
     text-decoration: underline;
   }
 
@@ -188,11 +285,27 @@
     cursor: pointer;
   }
 
-  .deactivated {
-    color: #999;
+  .menu {
+    list-style-type: none;
   }
 
-  .deactivated:hover {
+  .v-menu__content {
+    background-color: white;
+    color: var(--button1);
+    margin-top: 5px;
+    padding: 5px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .v-menu__content li:hover {
+    background-color: #dedeff;
+
+  }
+
+  .deactivated {
+    color: #999;
+    pointer-events: none;
     cursor: unset;
   }
 
@@ -212,7 +325,7 @@
 
   v-leave-active: Active state for leave. Applied during the entire leaving phase. Added immediately when leave transition is triggered, removed when the transition/animation finishes. This class can be used to define the duration, delay and easing curve for the leaving transition.
 
-  v-leave-to: Only available in versions 2.1.8+. Ending state for leave. Added one frame after a leaving transition is triggered (at the same time v-leave is removed), removed when the transition/animation finishes.*/
+  v-leave-to: Only available in versions 2.1.8+. Ending state for leave. Added one frame after a leaving transition is triggered (at the same time v-leave is removed), removed when the transition/animation finishes./*/
 
   .slide-enter {
     transition-delay: 0ms;
@@ -244,6 +357,38 @@
   ...NOT WORKING */
   .v-application code {
     all: unset;
+  }
+
+  @media (min-width: 771px) {
+    .mobile {
+      display: none;
+    }
+
+    .v-menu__content {
+      display: none;
+    }
+
+    .desktop {
+      display: initial;
+    }
+
+    .router-links {
+      width: 500px;
+    }
+  }
+
+  @media (max-width: 770px) {
+    .mobile {
+      display: initial;
+    }
+
+    .desktop {
+      display: none;
+    }
+
+    .router-links {
+      width: unset;
+    }
   }
 
 

@@ -102,16 +102,6 @@ const router = new VueRouter({
   routes
 });
 
-// router.beforeEach((to, from, next) => {
-//   let currentUser = auth.currentUser;
-//   let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-//   console.log('requiresAuth: ', requiresAuth);
-//   if (requiresAuth && !currentUser) {
-//     next({name: 'login1'});  //or next('/login1')
-//   } 
-//   else next();
-// })
-
 function hidePositionDisplay(action) {
   action === 'hide' ? 
   store.dispatch('displayNone', true) :
@@ -123,11 +113,12 @@ router.beforeEach((to, from, next) => {
   let currentUser = auth.currentUser;
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   console.log('requiresAuth: ', requiresAuth);
-  if ((to.name === 'blog_entry') || (to.name === 'blog_view') || (to.name === 'chess')) {
+  let showPositionDisplayRoutes = ['canvas', 'signin'];
+  if (!showPositionDisplayRoutes.includes(to.name)) {
     hidePositionDisplay('hide')
   } 
-  if ((to.name !== 'blog_entry') && (to.name !== 'blog_view') && (to.name !== 'chess')) {
-    hidePositionDisplay()
+  if (showPositionDisplayRoutes.includes(to.name)) {
+    hidePositionDisplay('show')
   } 
   if (requiresAuth && !currentUser) {
     next({name: 'login'});  //or next('/login')
