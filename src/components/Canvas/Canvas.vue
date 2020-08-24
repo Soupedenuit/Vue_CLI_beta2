@@ -113,7 +113,7 @@
     /* height: 100%; */
     /* width: calc(100vw - 17px); */
     height: 1100px;
-    width: 100vw;
+    /* width: 100vw; */
     background-color: rgb(50, 50, 50);
     color: var(--color1);
     font-family: 'Open Sans', 'Poiret One';
@@ -126,11 +126,6 @@
   }
 
   #canvas {
-    /* position: fixed; */
-    /* display: flex; */
-    /* display: block; */
-    /* flex-direction: column; */
-    /* align-items: center; */
     width: 800px;
     height: 800px;
     margin-left: 50%;

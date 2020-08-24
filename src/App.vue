@@ -121,7 +121,7 @@
             </v-btn>
           </template>
 
-          <router-link v-for="(routerLink) in routerLinks"
+          <router-link v-for="(routerLink, i) in routerLinks"
           :key="routerLink.name"
           :to="routerLink.link" 
           tag="li" 
@@ -129,6 +129,7 @@
           class="hover menu"
           :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}">
             <span>{{ routerLink.name }}</span>
+            <hr v-if="i < 7">
           </router-link>
         </v-menu>
       </div>
@@ -274,6 +275,7 @@
 
   .router-link-active span:first-child {
     text-decoration: underline;
+    font-weight: bolder;
   }
 
   #login-text {
@@ -289,18 +291,19 @@
     list-style-type: none;
   }
 
+  /* Vuetify */
   .v-menu__content {
     background-color: white;
     color: var(--button1);
     margin-top: 5px;
-    padding: 5px;
+    padding: 5px 10px;
     text-align: center;
-    line-height: 1.5;
+    line-height: 2;
   }
 
+  /* Vuetify */
   .v-menu__content li:hover {
     background-color: #dedeff;
-
   }
 
   .deactivated {
@@ -312,20 +315,6 @@
   .width-100 {
     width: 100vw;
   }
-
-  /*There are six classes applied for enter/leave transitions.
-
-  v-enter: Starting state for enter. Added before element is inserted, removed one frame after element is inserted.
-
-  v-enter-active: Active state for enter. Applied during the entire entering phase. Added before element is inserted, removed when transition/animation finishes. This class can be used to define the duration, delay and easing curve for the entering transition.
-
-  v-enter-to: Only available in versions 2.1.8+. Ending state for enter. Added one frame after element is inserted (at the same time v-enter is removed), removed when transition/animation finishes.
-
-  v-leave: Starting state for leave. Added immediately when a leaving transition is triggered, removed after one frame.
-
-  v-leave-active: Active state for leave. Applied during the entire leaving phase. Added immediately when leave transition is triggered, removed when the transition/animation finishes. This class can be used to define the duration, delay and easing curve for the leaving transition.
-
-  v-leave-to: Only available in versions 2.1.8+. Ending state for leave. Added one frame after a leaving transition is triggered (at the same time v-leave is removed), removed when the transition/animation finishes./*/
 
   .slide-enter {
     transition-delay: 0ms;
@@ -355,9 +344,9 @@
 
   /* undo Vuetify styling for <code> tag 
   ...NOT WORKING */
-  .v-application code {
+  /* .v-application code {
     all: unset;
-  }
+  } */
 
   @media (min-width: 771px) {
     .mobile {
@@ -390,6 +379,20 @@
       width: unset;
     }
   }
+
+  /*There are six classes applied for enter/leave transitions.
+
+  v-enter: Starting state for enter. Added before element is inserted, removed one frame after element is inserted.
+
+  v-enter-active: Active state for enter. Applied during the entire entering phase. Added before element is inserted, removed when transition/animation finishes. This class can be used to define the duration, delay and easing curve for the entering transition.
+
+  v-enter-to: Only available in versions 2.1.8+. Ending state for enter. Added one frame after element is inserted (at the same time v-enter is removed), removed when transition/animation finishes.
+
+  v-leave: Starting state for leave. Added immediately when a leaving transition is triggered, removed after one frame.
+
+  v-leave-active: Active state for leave. Applied during the entire leaving phase. Added immediately when leave transition is triggered, removed when the transition/animation finishes. This class can be used to define the duration, delay and easing curve for the leaving transition.
+
+  v-leave-to: Only available in versions 2.1.8+. Ending state for leave. Added one frame after a leaving transition is triggered (at the same time v-leave is removed), removed when the transition/animation finishes./*/
 
 
 </style>
