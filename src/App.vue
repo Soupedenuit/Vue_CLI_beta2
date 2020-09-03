@@ -1,7 +1,7 @@
 <template>
 
   <v-app id="v-app">
-    <v-app-bar app color="primary" dark >
+    <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -96,12 +96,12 @@
         class="hover"
         :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}">
           <span>{{ routerLink.name }}</span>
-          <span v-if="i < 7"> | </span>
+          <span v-if="i < (routerLinks.length - 1)"> | </span>
         </router-link>
       </div>
 
       <div class="router-links mobile">
-        <v-menu
+        <v-menu ref="linksMenu"
           :disabled="disabled"
           :absolute="absolute"
           :open-on-hover="openOnHover"
@@ -129,7 +129,7 @@
           class="hover menu"
           :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}">
             <span>{{ routerLink.name }}</span>
-            <hr v-if="i < 7">
+            <hr v-if="i < (routerLinks.length - 1)">
           </router-link>
         </v-menu>
       </div>
@@ -152,7 +152,10 @@
 
       <transition name="slide" mode="out-in">
         <keep-alive>
-          <router-view test="<router-view> prop test" ref="routerView"></router-view>
+          <router-view v-on:changeRouterlinkName="changeRouterlinkName"
+          ref="routerView"
+          test="<router-view> prop test">
+          </router-view>
         </keep-alive>
       </transition>
 
@@ -167,14 +170,14 @@
 
   import SessionTime from '@/components/SessionTime/SessionTime.vue';
   import PositionMonitor from '@/components/PositionMonitor.vue';
-  import {mapState} from 'vuex'
+  import {mapState} from 'vuex';
+  import eventHub from '@/eventHub.js';
 
   export default {
     name: 'App',
     components: {
       SessionTime,
       PositionMonitor
-      // HelloWorld
     },
     data: () => ({
       slotText: 'slot text from data',
@@ -250,15 +253,24 @@
     }),
     methods: {
       getDeactivatedStatus: function(entry) {
-        console.log(entry);
+        // console.log(entry);
         return this[entry]
       },
       getDisplay() {
         console.log('getDisplay called!');
         return false
+      },
+      changeRouterlinkName(text) {
+        this.routerLinks[0].name = text;
+      },
+      broccoli(text) {
+        console.log(text)
       }
     },
-    created() { console.log('created!')},
+    created() { 
+      console.log('created!')
+      // eventHub.$on('changeRouterlinkName', this.changeRouterlinkName)
+    },
     mounted() { console.log('mounted!')},
     beforeUpdate() { console.log('beforeUpdate!')},
     updated() { console.log('updated!')},
@@ -362,7 +374,7 @@
     }
 
     .router-links {
-      width: 500px;
+      width: 515px;
     }
   }
 

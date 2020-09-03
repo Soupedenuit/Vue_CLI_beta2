@@ -1,8 +1,10 @@
 <template>
   <div>
-    <span id="session-time" v-bind:class="{'translateY-slider': translateY}">
-      {{beta}}<br/>{{alpha}}
-    </span>
+    <v-card>
+      <span id="session-time" v-bind:class="{'translateY-slider': translateY}">
+        {{beta}}<br/>{{alpha}}
+      </span>
+    </v-card>
  
     <!-- session time button -->
     <button 
@@ -68,11 +70,17 @@ export default {
   position: fixed;
   /* z-index: 3; */
   font-size: 0.8em;
+  font-weight: 500;
   width: 240px;
   margin: 0;
-  top: -40px; /* height minus 10px */
+  top: -50px;
   right: 10px;
+  background-color: white;
   color: var(--button1); /* #1867c0; */
+  padding: 2px 2px 3px 5px;
+  border-radius: 4px;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
   -webkit-transition: -webkit-transform 0.3s ease;
      -moz-transition: -moz-transform 0.3s ease;
       -ms-transition: -ms-transform 0.3s ease;
@@ -81,11 +89,11 @@ export default {
 }
 
 .translateY-slider {
-  -webkit-transform: translateY(112px);
-     -moz-transform: translateY(112px); 
-      -ms-transform: translateY(112px); 
-       -o-transform: translateY(112px); 
-          transform: translateY(112px);
+  -webkit-transform: translateY(118px);
+     -moz-transform: translateY(118px); 
+      -ms-transform: translateY(118px); 
+       -o-transform: translateY(118px); 
+          transform: translateY(118px);
 }
 
 button {

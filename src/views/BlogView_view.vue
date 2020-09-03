@@ -44,13 +44,14 @@ export default {
 main {
   margin-top: 50px;
   width: 100%;
-  background-color: var(--backg2);
+  background-color: var(--backg4);
   color: var(--color2);
   font-family: 'Roboto', 'Open Sans', 'Poiret One';
 }
 
 h1, time {
   text-align: center;
+  color: var(--color5);
 }
 
 time {
@@ -74,6 +75,12 @@ p {
   /* text-justify: inter-character; */
   text-justify: auto;
   text-align: justify;
+}
+
+/* this won't work as .v-application code located in index.css takes precedence */
+code {
+  color: var(--color6);
+  font-size: 1.1em;
 }
 
 

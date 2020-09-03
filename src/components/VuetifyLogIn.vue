@@ -4,10 +4,10 @@
       <!-- <v-row align="center" justify="center" > -->
         <!-- <v-col cols="12" sm="8" md="4" > -->
           <v-layout align-center>
-            <v-flex>
-              <v-card class="elevation-6">
+            <v-flex class="mobile">
+              <v-card class="elevation-6 ">
                 <v-toolbar color="primary" dark flat>
-                  <v-toolbar-title>Login form</v-toolbar-title>
+                  <v-toolbar-title>Login form using Firebase Authentication</v-toolbar-title>
                   <v-spacer />
                   <!-- <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
@@ -122,6 +122,9 @@
           .then(()=>routerView.authInfo = 'sign in successful!')
           .then(()=> this.$store.dispatch('updateLoginStatus', true))
           .then(()=> toggleRouterLinks('loggedIn'))
+          // .then(()=> eventHub.$emit('changeRouterlinkName', 'Logout'))
+          // .then(()=> this.$root.$children[0].changeRouterlinkName('Logout'))
+          .then(()=> this.$emit('changeRouterlinkName', 'Logout'))
           .catch(function(err) {
             console.log(err);
             // console.log(err.message);
@@ -147,7 +150,8 @@
           .then(()=> this.$store.dispatch('resetState', this.$initialState.users))
           .then(()=> this.$store.dispatch('updateLoginStatus', false))
           .then(toggleRouterLinks)
-          // .then(()=> eventHub.$emit('readDatabase', {uid: null, uidChange: 'logout'}))
+          // .then(()=> eventHub.$emit('changeRouterlinkName', 'Login'))
+          .then(()=> this.$emit('changeRouterlinkName', 'Login'))
           // .then(()=> {this.$router.push({name: 'blog'})})
           .catch(function(err) {
             console.log(err);
@@ -162,8 +166,28 @@
 
 
 <style scoped>
+
   .container {
     width: 900px;
+    margin-top: 20px;
   }
+
+  @media (min-width: 771px) {
+    .mobile {
+      width: unset;
+    }
+  }
+
+  @media (max-width: 770px) {
+    .mobile {
+      width: 100vw;
+      margin: 0;
+    }
+    .container {
+      width: unset;
+      padding: 0;
+    }
+  }
+  
 
 </style>

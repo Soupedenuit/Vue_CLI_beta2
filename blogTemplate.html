@@ -1,0 +1,543 @@
+<time id="time-blog-view" datetime="2020-08-30">August 30, 2020</time>
+<h1 id="h1-blog-view" >Programming notes:  May - Aug, 2020
+</h1>
+<h4>To check out:</h4>
+<ul>
+  <li>Headless CMS: Storyblok (Vue)</li>
+  <li>Shopify development</li>
+  <li>Temporal TC39 proposal - modern date/time API</li>
+</ul>
+
+<h4>To Do:</h4>
+<ul>
+  <li><del>Update Atom Projects/template</del></li>
+  <li>consolidate all my utility functions in one custom library</li>
+  <li>Add themes to blog page</li>
+  <li>Add loading page to Chess_view until API has loaded</li>
+  <li>Sort chess results based on latest dates</li>
+  <li>Make a svg icon component (TargetBlank &amp; IconBase)</li>
+  <li>improve Lighthouse score of my Simon project</li>
+</ul>
+
+<h4>Stack overflow - useful answers</h4>
+<ul>
+  <li><a id="a" href="https://stackoverflow.com/questions/1759987/listening-for-variable-changes-in-javascript" target="_blank">Listening For Variable Changes in JavaScript<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" ><path fill="#1976d2" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a></li>
+  <li><a id="a" href="https://stackoverflow.com/questions/33692912/using-object-assign-and-object-create-for-inheritance#33710351" target="_blank">Using Object.assign() and Object.create() for Inheritance<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" ><path fill="#1976d2" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a></li>
+</ul>
+
+<p>HSLA not working on current version of Edge (44): use HSL instead.<br>
+fit-content or max-content not working on current version of Edge (44). Same with RGBA (use RGB only)
+</p>
+
+<p>scoped styles computed after global styles
+</p>
+
+<p>use @supports CSS at-rule {property} to check for CSS feature
+</p>
+
+<p>getBoundingClient.Rect().x (or y) not available in Edge: 
+(use left or top instead)
+</p>
+
+<p>textarea does not have a value attribute but it can be set with JS.
+<br>Keep in mind that if you are using 2-way binding (v-model) to update textarea content, and you separately try to update textarea content using DOM property value, textarea content will update, however the data tied to v-model in your vue instance will not update. <br>On another note, textarea size is not adjustable with mouse in Edge <strong>(06/21/220 update - it looks like I can now)</strong>
+</p>
+
+<p>In Vue, use v-model instead of mustache braces for input, textarea, select.
+</p>
+
+<p>Computed properties in Vue are getters by default but if you want to add
+a setter you must need to change the computed property from a function 
+to an object with two properties; get and set. 
+</p>
+
+<p>Cannot use getters & setters inside computed properties if mapState used
+</p>
+
+<p>Firebase:  a ref snapshot is for reading - don't use snapshot for writing
+ref.push creates a unique key
+</p>
+
+<p>Firebase: update profile as follows:  auth.currentUser.updateProfile({
+  displayName: 'Tony W'})
+</p>
+
+<p>Vuex: Actions, Mutations & Getters are always registered under the 
+global namespace (the $store root). State on the other hand is not.
+</p>
+
+<p>eventHub.js created in a separate file in src, used as follows:
+  <ul>
+    <li>imported in firebaseDatabase.vue</li>
+    <li>eventHub.$on in created(), eventHub.$off in beforeDestroy()</li>
+    <li>imported in VuetifyLogIn.vue </li>
+    <li>eventHub.$emit in login_logout() function</li>
+  </ul>
+</p>
+
+<p>
+Object.assign(this.$data, initialState()) - good way to reset state
+</p>
+
+<p>
+initialState established as follows:
+  <ul>
+    <li>created a file called initalState.js (in src) </li>
+    <li>it exports 2 functions:  getInitialState, resetInitialState </li>
+    <li>resetInitialState imported in store/modules/users </li>
+    <li>resetInitialState used in RESET_STATE mutation </li>
+    <li>getInitialState imported in main.js </li>
+    <li>Vue.prototype.$initialState = getInitialState(vm_beta2.$store.state) </li>
+    <li>upon signout we will call this.$store.dispatch('resetState', this.$initialState.users) </li>
+  </ul>
+</p>
+
+<p>Autoprefixer:<br>
+PostCSS plugin to parse CSS and add vendor prefixes to CSS rules using values from Can I Use. It is recommended by Google and used in Twitter and Alibaba. <em> Used by browserslist in package.json</em>
+</p>
+
+<p>Write your CSS rules without vendor prefixes (in fact, forget about them entirely):<br>
+Support misc browsers in VueCLI project by targeting specific browsers in browserslist in package.json
+(see https://browserl.ist/)<br>
+Remove source maps in production by setting [productionSourceMap: false] in vue.config.js
+</p>
+
+<p>Main commands:
+  <ul>
+    <li>
+      <em>npm run serve</em> (script for 'vue-cli-service serve')
+    </li>
+    <li>
+    	<em>npm run build</em> (script for 'vue-cli-service build')
+    </li>
+    <li>
+      <em>firebase init</em> (choose 'dist' as target folder)
+    </li>
+    <li>
+      <em>firebase deploy</em> (hosting)
+    </li>
+  </ul>
+</p>
+
+<p>Babel config:  presets: ['@vue/cli-plugin-babel/preset']<br>
+Uses 'babel-preset-app'. This is the default Babel preset used in all Vue CLI projects. Note: this preset is meant to be used exclusively in projects created via Vue CLI and does not consider external use cases.
+Included Features:<br>
+@babel/preset-env
+preset-env automatically determines the transforms and polyfills to apply based on your browser target. See Browser Compatibility section in docs for more details.
+</p>
+
+<p>The time element cannot align-center or transform without setting display: block
+</p>
+
+<p>REST API: use double quotes in curl reference
+</p>
+
+<p>HTMLCollection vs NodeList:<br>
+An HTMLCollection is an array-like data structure that holds elements. It is a live collection and provides methods to grab things from the list. Similarly, a NodeList is an array-like collection of Nodes that can be live or static and has methods to iterate over the list.<br>
+The main difference is that a NodeList holds nodes and an HTMLCollection just elements. 
+Ex: querySelectorAll() returns a static NodeList while getElementsByTageName returns a live HTMLCollection
+</p>
+
+<p>reminder: new DocumentFragment() is the same as document.createDocumentFragment()
+</p>
+
+<p>Used Vue mixins today [Jun 5]<br>
+Mixins are a flexible way to distribute reusable functionalities for Vue components. A mixin object can contain any component options. When a component uses a mixin, all options in the mixin will be “mixed” into the component’s own options.<br>
+A mixin runs first before component's code, then it is bound (merged) by Vue to the component instance so it's easy to access mixin from component/instance scope, but not vice versa.<br>
+The vue instance (this) may not be accessible, depending how it's used
+</p>
+
+<p>Remember - cannot fetch txt file locally; it must be done through a server
+</p>
+
+<p>Use http-server (already installed in node)</p>
+
+<p>Passing Command Line Arguments in Node.js:<br>
+The simplest way of retrieving arguments in Node.js is via the process.argv array. This is a global object that you can use without importing any additional libraries to use it.<br>
+See my idGenerator.js file as an example
+</p>
+
+<p>Regexp.exec</p>
+
+<p>Keyboard events: <br>
+event.code === 13 vs <br>
+event.keyCode === 'Enter' vs <br>
+event.which === 0 (mouse) <br>
+I use <strong>keyCode</strong> - read up on why again...
+</p>
+
+<p>If function parameter is an object (named arguments), default values are assigned using = operator (not :)<br>
+ex: function hello({name = 'Tony', greeting})<br>
+<strong>not</strong> function hello({name: 'Tony', greeting})<br>
+</p>
+
+<p>To do next:<br>
+  <ul>
+    <li>add keybindings to go to end of textarea</li>
+    <li>Look into Firebase Cloud functions (auto emails)</li>
+  </ul>
+</p>
+
+<p>When adding a ref attribute in an element using v-for, the registered reference will be an Array containing DOM nodes or component instances. So just give it a simple name (ex: ref="refName") and you can reference it as refName[0], etc...
+</p>
+
+<h4>Some notes about how Blog_view.vue works:</h4>
+<ul>
+  <li>Upon login, the Firebase database is read via firebaseDatabase.vue</li>
+  <li>Once snapshot is read, blog entry is dispatched to Vuex store</li>
+  <li>It is dispatched using action 'populateBlogArticle'</li>
+  <li>This updates Vuex state value of blog_article</li>
+  <li>In Blog_view.vue, the article element is reactive via v-html directive with value of blog_article,<br>
+  and blog_article is a computed property updated via mapState({blog_article: 'blog_article'})</li>
+  <li>The textarea content is binded 2-way using v-model with data value 'blogText' within the instance</li>
+  <li>The textarea has handlers, one of which (ctrl-enter) is submitBlog()</li>
+  <li>submitBlog() writes to Firebase database, which in turn updates our article element,<br>
+  because whenever we write to Firebase, getSnapshot is called again (via ref.on())</li>
+  <li>getSnaphot() is where $store.dispatch('populateBlogArticle', blogEntry) is called</li>
+</ul>
+
+<p>Vue's list rendering directive v-for:<br>
+You can use of as the delimiter instead of in, so that it is closer to JavaScript’s syntax for iterators
+</p>
+
+<p>v-if only renders the element to the DOM if the expression passes.<br>
+v-show renders the element to the DOM regardless of the expression's truthiness, then uses the CSS display property to hide elements if the expression fails.
+Which one you want to use depends on if you care about whether you want the element to render initially or not.
+</p>
+
+<p>tabindex="-1":<br>
+Makes the element not reachable via sequential keyboard navigation, but makes it focusable with Javascript or visually by clicking with the mouse. 
+</p>
+
+<p>tabindex="0":<br>
+Makes the element focusable in sequential keyboard navigation, after any positive tabindex values and its order is defined by the document's source order.<br>
+Only focusable elements can be focused (not <em>any</em> element). I tried everything to make a &lt;li&gt; element focusable and did not succeed, even programmatically using focus()
+</p>
+
+<p>Making my tags list's &lt;li&gt; elements focusable involved adding a &lt;a&gt; (anchor) tag in each &lt;li&gt; tag (without href attributes) and making them <em>display: block</em> and <em>width: 100%</em>
+</p>
+
+<p>Notes on Vue.$nextTick:<br>
+In a simple Vue project, simply use <code>Vue.nextTick()</code><br>
+In a CLI project, you must import {nextTick} then use it without <em>Vue</em>, simply <code>this.$nextTick().</code><br>It can be used either like this: <code>this.$nextTick(function() {...})</code>,<br>
+or use as a promise: <code>this.$nextTick().then(function() {...})</code><br>
+Look further into Vue.nextTick vs this.$nextTick (Global API vs instance method) as above confuses me
+</p>
+
+<p>text-justify: inter-word | inter-character | auto (use with text-align: justify)</p>
+
+<h4>Notes on configuring the article status update</h4>
+<ul>
+  <li>An aside element with two reactive computed properties for line 1 &amp; line 2 of the status text</li>
+  <li>These 2 computed properties are mapped to Vuex store:<br>
+  articleUpdateStatus1 & articleUpdateStatus2</li>
+  <li>Action to dispatch updates named populateArticleUpdateStatus()</li>
+  <li><code>this.$store.
+  dispatch('populateArticleUpdateStatus', payload)</code>called at the following locations:
+    <ul>
+      <li>in getSnapshot() in the firebaseDatabase.vue file</li>
+      <li>in setArticleUpdateStatus() method in Blog_view.vue file</li>
+    </ul>
+  </li>
+  <li>setArticleUpdateStatus() is called at the following locations:
+    <ul>
+      <li>in submitBlog() method</li>
+      <li>in populateTextarea() method</li>
+      <li>in blogText watcher</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500. Instead, it will resolve normally (with ok status set to false), and it will only reject on network failure or if anything prevented the request from completing.
+</p>
+
+<p>Configuring router-links disabling took me 3 hours. Here's why:
+  <ul>
+    <li>I knew how to accomplish it right away:</li>
+    <li>add routerLinks property to state store with value false for each link</li> 
+    <li>bind a class to each router-link (in App.vue)</li>
+    <li>class to compute to true based on individual computed properties in App.vue</li>
+    <li>mapState() each computed properties</li>
+    <li>loop through each route in routes (in router.vue) and find any route that requires Auth</li>
+    <li>call store.dispatch('disableRouterLink'...) if Auth is required</li>
+    <li>This sets routerLink=>link name state to true</li>
+    <li>This in turn sets the binded "deactivated" class in any router-link that requires Auth to true</li>
+    <li>Simple, but... it doesn't work. Why?:</li>
+    <li>Class-binding to computed properties inside &lt;router-link&gt; not working because:</li>
+    <li>I had not set <em>props: true</em> for each route in router.vue.</li>
+    <li>It took a lot of searching to realize this</li>
+    <li>Second problem:  mapState does not give access to nested properties directly:</li>
+    <li>Example: if we have <code>state: {routerLinks: {login: false}</code>:</li>
+    <li>We can't do: <code>mapState({routerLink_login: 'routerLinks.login'</code></li>
+    <li>We must do: <code>mapState({routerLink_login: state => state.routerLinks.login</code></li>
+    <li>Once these two issues were resolved, everything worked!</li>
+    <li>All left to do was create a function in router.vue that loops through routes & export it</li>
+    <li>Then import that function in VuetifyLogin.vue and call it on login/logout</li>
+  </ul>
+</p>
+
+<p>Embedding a pdf is not simple. I tried &lt;object&gt; &amp; &lt;embed&gt; &amp; &lt;iframe&gt; and all three resulted in inception-style self-reference to the page.<br>
+&lt;object&gt; is deprecated by the way.<br>
+If you want to embed a pdf it is best to go with a library like <em>pdfjs.</em>
+</p>
+
+<p>A few new things I learned concerning Safari 9:<br>
+  <ul>
+    <li>fetch() API is not available - must use XMLHttpRequest</li>
+    <li>Arrow functions are not available</li>
+    <li>I had to modify my blog1.tonywhomever.dev js file to make it work on my iPhone.</li>
+  </ul>
+</p>
+
+<p>Adding draggable feature on my tagslist did not involve the Draggable API at all.<br>
+It was simply a question of adding mouse events and modifying element position<br>
+The Draggable API is for transferring data or multi element manipulation.
+</p>
+
+<p>Features to add to app:
+  <ul>
+    <li>Dropdown nav menu for mobile</li>
+    <li><del>better tag management (i.e. lists)</del> - done</li>
+    <li>add stocks in nav bar</li>
+  </ul>
+</p>
+
+<p>How I resolved the "enter" problem in textarea:
+  <ul>
+    <li>Pressing enter in textarea cause a scroll bringing cursor to top and I would lose sight of where I was</li>
+    <li>Added the handler <code>v-on:keydown.exact.enter.prevent=
+    "addTags(...)"</code>to textarea</li>
+    <li>text added is simply <em>"\n"</em></li>
+    <li>new cursor position is then +1</li>
+    <li>That's it!</li>
+  </ul>
+</p>
+
+<p>VS Code Themes I like:
+  <ul>
+    <li>Night Owl (Sarah Drasner)</li>
+    <li>Monokai</li>
+    <li>One Dark Pro</li>
+    <li>Dark (Visual Studio)</li>
+    <li>Halcyon</li>
+    <li>Abyss</li>
+    <li>Deep Dark Material Theme | Default & Full Black</li>
+    <li>Zenburn Dark Matter - [any] - Blackpond Has My Heart</li>
+  </ul>
+</p>
+
+<p>More notes on textarea. To be clear, once you set a value to textarea.value, textarea input field is no longer reactive with changes in value of <em>blogText</em> data
+</p>
+
+<p>Element.closest():<br>
+The closest() method traverses the Element and its parents (heading toward the document root) until it finds a node that matches the provided selector string. Will return itself or the matching ancestor. If no such element exists, it returns null.<br>
+ex: <code>var closestElement = targetElement.closest(selectors);</code>
+</p>
+
+<p>Node terminal:<br>
+Always used double quotes either for file names with spaces or for node arguments, or other.
+</p>
+
+<p>Node; setInterval observation:<br>
+much less accurate than in the browser. Even at 992 millisecs intervals can take over 1 second!
+</p>
+
+<p>I added a prototype method to <em>Number</em> as follows:<br>
+<code>Number.prototype.between = function(numbers = [0,0], inclusive = true) {
+  let a = numbers[0];
+  let b = numbers[1];
+  let min = Math.min(a, b);
+  let max = Math.max(a, b);
+  return inclusive ? this >= min && this <= max : this > min && this < max;
+};</code><br>
+So instead of doing:<br>
+<code>if (entryNumber >= 50 && entryNumber <= 60)</code><br>
+I can do:<br><code>if (entryNumber.between(blogEntries)) {..</code>
+</p>
+
+<p>Using require() to read json files presents a caveat.<br>
+<code>ex:  const data = require('./sample.json');</code><br>
+require() will always cache the content of the loaded module (or file, in this case).<br>
+The next time require() is called again, it will restore it from the cache instead of reading it again.<br>
+This can be good or bad depending on your requirements.
+</p>
+
+<p>Note: if textarea is resized to fit, and you add a tag, window will scroll down!<br>
+So always reset to scroll before adding tags (until issue is fixed)</p>
+
+<p>Search for text in strings:
+  <ul>
+  <li>String.search()</li>
+  <li>String.match()</li>
+  <li>String.indexOf()</li>
+  </ul>
+</p>
+
+<p>Node: performance.now() is not available in Node by default. You must add this API (no package required):<br><code>const { PerformanceObserver, performance } = require('perf_hooks');</code>
+</p>
+
+<p>The read-only CSSStyleSheet property cssRules returns a live CSSRuleList which provides a real-time, up-to-date list of every CSS rule which comprises the stylesheet. Each item in the list is a CSSRule defining a single rule. The objects <code>cssRules</code>and <code>rules</code>are constructed through the same steps. Hence they result in the same object.<code>rules</code>is deprecated and it is provided only for the sake of compatibility with the existing sites. <br>
+Example:<br>
+<code>document.styleSheets[0].rules === 
+ document.styleSheets[0].cssRules // true</code>
+</p>
+
+<p>Try the font <em>proxima-nova</em> at 20px. It looks really nice on this site:  <a id="a" href="https://www.git-tower.com/learn/git/commands/git-pull" target="_blank">git-tower.com<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" ><path fill="#1976d2" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>
+</p>
+
+<p>Git:  you cannot push to a non-bare repository<br> use <code>git init --bare</code>if you wish to create a local remote repository.<br>
+Delete remote branch:  <code>git push origin --delete &lt;branch-name&gt;</code>
+</p>
+
+<p><ins>Touch events:</ins><br>
+For touch events such as <em>touchstart, touchmove, touchend</em>,<code>event.clientX, event.clientY</code>will not work.<br>
+<em>Touches</em> is a read-only <em>TouchList</em> listing all the Touch objects for touch points that are currently in contact with the touch surface, regardless of whether or not they've changed or what their target element was at touchstart time.<br>
+<code>let touches = touchEvent.touches</code><br>
+Ex:  for mouse events you use <code>event.clientX</code>, but for touch events you use <code>event.touches[0].clientX</code><br>
+No support in IE &amp; Safari.
+</p>
+
+<p>The Intl.RelativeTimeFormat object enables language-sensitive relative time formatting.<br>
+<code>let formatter = new Intl.RelativeTimeFormat('en', { style: 'narrow' });
+console.log(rtf1.format(-1, 'day'));
+//expected output: "1 day ago"</code>
+</p>
+
+<p>firebase.storage() does not work in this project because it is not available in Node.js (won't work with Vue CLI build)</p>
+
+To v-bind img src, make sure you use require() for URL reference.<br>
+For example:<br>
+<code>//template:
+&lt;img v-bind:src="image1" alt="a logo png" width="400"&gt;
+</code><br>
+<code style="margin-top:5px;">//script:
+const img1 = require('../assets/logo.png');
+export default {
+  data: () => ({
+      image1: img1
+  })
+}
+</code><br>
+or...<br>
+<code>export default {
+  data: () => ({
+      image1: require('../assets/logo.png')
+  })
+}
+</code>
+
+<p><strong>Lists.</strong> For lists without style, use<br>
+<code>ul {
+list-style-type: none;
+padding-left: 0;
+}</code>
+</p>
+
+<p>Yesterday I learned something basic. The index in a <em>for...in</em> iteration over an object, example:<br>
+<code>for (let (item, index) in items) {...</code><br>
+is not a number. It is the key itself. I was having a problem with a v-for in Vue in my ChessAPI page:<br>
+<code>&lt;article v-for="(game, index) in chessData"
+v-bind:key="index" &gt;
+&lt;h3&gt;{{ index }}&lt;/h3&gt;</code><br>
+<code>{{ index }}</code>here will compute to the word "blitz", which is the first key in chessData object. I thought that it computed to a number and caused me a lot of bafflement.</p>
+
+<h4>Vue refs & lifecycle hooks</h4>
+<p>I had a problem calling the function <em>findLatestData()</em> in <code>mounted()</code>, which uses <code>this.$refs</code>.<br><code>$refs</code>was in reference to an element using <code>v-for</code>. Even when created and mounted, a ref used in a v-for directive is not fully rendered. When ref is used together with v-for, the ref you get will be an array containing the child components mirroring the data source. In the Vue guide it says "$refs are only populated after the component has been rendered, and they are not reactive. It is only meant as an escape hatch for direct child manipulation - you should avoid accessing $refs from within templates or computed properties." Even using <code>$nextTick()</code>in mounted() I was having problems<br>
+I fixed my problem using <code>beforeUpdate()</code>, like so:<br>
+<code>beforeUpdate() {
+      let this1 = this;
+      this.$nextTick().then(function() {
+        this1.findLatestData()
+      })
+    }</code><br>
+zzz
+<strong>Update:</strong> I was able to solve the problem without <em>beforeUpdate()</em> and without <em>setTimeout()</em>.  I needed to do so because <em>beforeUpdate()</em> produces its own set of problems.<br>
+Call <em>getChessData()</em> in <em>mounted()</em> after <em>nextTick()</em> like before, but call <em>findLatestData()</em> inside <em>getChessData()</em>. Like this:<br>
+<code>mounted() {
+      let this1 = this;
+      this.$nextTick()
+      .then(function() {
+        this1.getChessData()
+      })
+    },</code><br>and<br>
+<code>getChessData() {
+        let this1 = this;
+        getChessAPIData(this.user)
+        .then(function(result) {
+          this1.chessData = result;
+        })
+        .then(function() {
+          this1.sortChessData()
+        })
+        .then(function() {
+          this1.findLatestData()
+        })
+      },</code><br>
+You can see that we also added <em>sortChessData()</em> and it works just fine!
+</p>
+
+<p>Other notes:<br>
+It appears that <code>beforeUpdate()</code>fires twice when using v-for. In Chess.vue, <code>this1.findLatestData()</code>is called twice on first render</p>
+
+<p>
+Add notes about setInterval() and clearINterval() in Vue...
+</p>
+
+<p>Today July 30th at 1:25am I deployed this app <a id="a" href="https://vue-beta2.web.app" target="_blank">vue-beta2.web.app<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" ><path fill="#1976d2" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a> on Firebase, first time since June 3rd.<br>
+</p>
+
+<p>In the browser console you can use the <code>copy()</code>function to add console info to clipboard.<br>
+For example, if you right-click an Object in the console it will be stored as a global variable (usually temp1). Then simply type<br>
+<code>copy(temp1)</code><br>Easy peasy!
+</p>
+
+<p>
+I posted an answer on Stack Overflow related to a problem I was having with using v-model in combination with a prop. Since you can't mutate a prop I couldn't change the input value in my Chess.vue component. I solved it and the answer can be found here:<br>
+<a id="a" href="https://stackoverflow.com/questions/46164374/using-v-model-with-a-prop-on-vue-js/63224473#63224473" target="_blank">Using v-model with a prop on Vue.js<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" ><path fill="#1976d2" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>
+</p>
+
+<h4>CSS currentColor</h4>
+<p>Just found out that this works:<br>
+<code>div { 
+  color: red; 
+  border: 5px solid currentColor;
+  box-shadow: 0 0 5px solid currentColor;
+}</code><br>
+Great for SVGs! 
+</p>
+
+<h4>TESTING:</h4>
+<a id="a" href="" target="_blank">TEXT<IconBase icon-name="targetBlank"><IconTargetBlank /></IconBase></a>
+
+<p>
+<strong>Firebase.analytics()</strong> no longer working as discovered on Aug 16th. This error was blocking app script:<br>
+"Uncaught TypeError: firebase.analytics is not a function"
+</p>
+
+<h4>Reactivity in Vue.js</h4>
+<p>Generally only data and computed properties are reactive in Vue.<br>
+However, as I've discovered, methods can establish a reactive dependency. For example, in App.vue I refactored <code>&lt;router-links&gt;</code>to loop over data with a v-for, but I couldn't figure out a way to bind a class to data that referenced other data (computed properties). Here:<br>
+<code>&lt;router-link v-for="(routerLink, i) in routerLinks"
+        :key="routerLink.name"
+        :to="routerLink.link" 
+        tag="span" 
+        tabindex="0"
+        class="hover"
+        :class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}"&gt;</code><br>
+Binded class <em>deactivated</em> is dependent on value of <em>routerLink.deactivated</em>, but <em>routerLink.deactivated</em> is simply a string representing a computed property obtained via Vuex store. So instead of just <code>:class="{deactivated: routerLink.deactivated}</code>, which would do nothing, we use <br>
+<code>:class="{deactivated: getDeactivatedStatus(routerLink.deactivated)}</code><br>
+Our method <em>getDeactivatedStatus</em> returns our sought after computed property and IS reactive. Why is it reactive? Not because our method references a computed property, no. It is reactive because it gets called on each template render. And our template is rendered each time there is a change in login status.
+</p>
+
+<p>
+Test: <a id="a" href="" target="_blank">url_here<IconBase icon-name="targetBlank"><IconTargetBlank /></IconBase></a>
+</p>
+
+<h4>List items</h4>
+<p>Use <code>padding-inline-start</code>(no IE support, big surprise) to set the space before the list marker (list style), and <code>padding-left</code>to set the space between the list marker and the text. Use <code>list-style-position</code>to set the position of the marker.
+</p>
+
+<br>
+<br>
+<p style="text-align: center;font-size:1.1em;">Fin</p>
+<hr/>

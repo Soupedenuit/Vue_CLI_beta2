@@ -16,11 +16,11 @@
     <article ref="chessGames" v-for="(game, index) in chessDataResult"
     v-bind:key="index" >
       <span id="userDisplay">user: {{userName}}</span>
-      <h2>{{ index }}</h2>
+      <h2>{{index}}</h2>
       <ul v-if="showData">
         <li ref="chessData" v-for="(stat, index) in game"
         v-bind:key="index" >
-        {{ index }}: {{ stat }}
+        {{index}}: {{stat}}
         </li>
       </ul>
       <p v-if="showError">
@@ -226,6 +226,7 @@
     position: relative;
     text-align: center;
     width: 50%;
+    min-width: 500px;
     border: 1px solid green;
     margin-bottom: 5px;
     font-size: 1.2em;
@@ -251,6 +252,13 @@
       display: none;
     }
   }
+
+    @media (max-width: 500px) {
+      article {
+        width: 100%;
+        min-width: unset;
+      }
+    }
 
 
 </style>

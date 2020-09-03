@@ -1,19 +1,19 @@
 <template>
   <v-container class="d-flex flex-column align-center">
   <!-- <v-container style="background-color: #eee" class="d-flex flex-column align-center"> -->
-    <VuetifyLogIn/>
+    <VuetifyLogIn v-on:changeRouterlinkName="emitToApp" />
     <EmptyComponent/>
     <v-layout>
-      <v-card class="mt-5 pa-3 elevation-6">
+      <v-card class="mt-5 pa-3 elevation-6 desktop">
         <p>{{loginText}}</p> 
         <p>{{authInfo}}</p> 
         <hr>
         <p class="text-left">Username: {{userName}}</p>
         <p class="text-left">Email: {{userEmail}}</p>
         <p class="text-left">Uid: {{userId}}</p>
-        <hr>
-        <!-- 'test' here is a prop -->
-        <p>{{test}}</p> 
+        <!-- <hr> -->
+        <!-- 'test' here is a test prop used in <router-view> -->
+        <!-- <p>{{test}}</p>  -->
       </v-card>
     </v-layout>
   </v-container>
@@ -59,6 +59,10 @@
     methods: {
       changeLoginTextStatus() {
         this.loginTextStatus = !this.loginTextStatus;
+      },
+      emitToApp(text) {
+        this.$emit('changeRouterlinkName', text)
+        console.log('emitted to App');
       }
     },
     activated() {
@@ -78,6 +82,26 @@
 
   hr {
     margin-bottom: 5px;
+  }
+
+  @media (min-width: 771px) {
+    .desktop {
+      display: initial;
+    }
+
+    /* .mobile {
+      display: none;
+    } */
+  }
+
+  @media (max-height: 750px) {
+    .desktop {
+      display: none;
+    }
+
+    /* .mobile {
+      display: initial;
+    } */
   }
 
 </style>

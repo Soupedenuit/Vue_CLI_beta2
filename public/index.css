@@ -7,11 +7,15 @@
   --button1:hsl(212, 78%, 42%); /* #1867c0; */
   --color1: hsl(212, 38%, 80%);
   --color2: hsl(212, 38%, 85%);
+  --color3: #bae67e;
+  --color4: #ffcc66;
+  --color5: #c3a6ff;
+  --color6: #5ccfe6;
+  --backg4: #2f3b54;
   box-sizing: border-box;
 }
 
 body {
-  background-color: #b3ffb3;
   display: flex;
   display: -webkit-box;
   display: -moz-box;
@@ -63,4 +67,15 @@ aren't specified in Vuetify */
   /* this works because of !important */
   background-color: #85b1ff !important;
   color: #2e456d !important;
+}
+
+/* for BlogView_view.vue file - cannot style #a locally */
+#a {
+  color: var(--color3);
+}
+
+/* for BlogView_view.vue file - cannot style #a locally */
+#h1-blog-view, #time-blog-view {
+  text-align: center;
+  color: var(--color5);
 }

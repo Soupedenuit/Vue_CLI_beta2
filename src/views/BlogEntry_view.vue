@@ -203,7 +203,7 @@
         } else el.style.height = 'initial';
       },
       addToTagslist: function() {
-        let svgIcon = svgIcons('openInNew');
+        let svgIcon = svgIcons('openInNew2');
         let tag = {tag: '<a></a>', text: svgIcon, atEnd: false};
         this.tagsList.push(tag)
       }
@@ -320,12 +320,21 @@
     /* height: 95%; */
     margin: 7px;
     padding: 5px;
-    background-color: cornflowerblue;
+    /* background-color: cornflowerblue; */
+    color: var(--color2);
+    background-color: var(--backg4);
     /* Manrope is nice but wonky & looks terrible on Edge */
+    /* Rubik is too round edgy */
+    /* Roboto already set as default for .v-application */
     /* font-family: Manrope, Rubik, Roboto; */
-    font-family: Rubik, Roboto;
+    /* font-family: Rubik, Roboto; */
     font-size: 1.1em;
     line-height: 1.4em;
+  }
+
+  h1, time {
+    text-align: center;
+    color: var(--color5);
   }
 
   article article {
