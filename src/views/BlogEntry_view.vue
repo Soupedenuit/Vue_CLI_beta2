@@ -2,8 +2,13 @@
   <main id="blog" class="container t-flex">
 
     <div class="pos-relative sub-container t-flex">
-      <button id="resize-btn" v-on:click="expandTextarea('resize')" tabindex="0">resize to fit</button>
-      <button id="reset-btn" v-on:click="expandTextarea('reset')" tabindex="0">reset to scroll</button>
+      <span class="btn-container">
+        <button class="btn" v-on:click="toggleTagsList" tabindex="0">tags<br><span class="small">CTRL-G</span></button>
+        <button class="btn" v-on:click="populateTextarea" tabindex="0">retrieve<br><span class="small">CTRL-SPACE</span></button>
+        <button class="btn" v-on:click="submitBlog($event)" tabindex="0">submit<br><span class="small">CTRL-ENTER</span></button>
+        <button class="btn" v-on:click="expandTextarea('resize')" tabindex="0">resize</button>
+        <button class="btn" v-on:click="expandTextarea('reset')" tabindex="0">scroll</button>
+      </span>
       <form>
         <label title="ctrl-space to retrieve current entry markup, ctrl-enter to submit" for="blog-text" >Enter blog markup:</label>
         <textarea id="blog-text" ref="textArea" name="blog-text" rows="20" cols="50" spellcheck="false" v-model="blogText" 
@@ -273,7 +278,7 @@
   form {
     /* display: flex; */
     flex-direction: column;
-    margin: 7px;
+    margin: 48px 7px 7px 7px;
     padding: 10px;
     /* width: 45%;
     height: 95%; */
@@ -287,28 +292,37 @@
   }
 
   textarea {
+    margin-top: 5px;
     padding: 5px;
     width: 100%;
     overflow: auto;
   }
 
-  #resize-btn, #reset-btn {
+  .btn-container {
     position: absolute;
-    top: 12px;
-    /* right: 10px; */
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+    top: 5px;
+    right: 7px;
+    width: 325px;
+    /* height: 40px; */
+  }
+
+  .btn {
+    background-color: deepskyblue;
     border: 1px solid #666;
-    padding: 1px 3px;
-    background-color: mediumslateblue;
+    border-radius: 4px;
+    width: 60px;
+    height: 38px;
+    padding-top: 2px;
+    line-height: 1em;
+    text-align: center;
+    font-weight: 500;
   }
 
-  #resize-btn {
-    width: 87px;
-    right: 123px;
-  }
-
-  #reset-btn {
-    width: 105px;
-    right: 12px;
+  .small {
+    font-size: .55em;
   }
 
   article {

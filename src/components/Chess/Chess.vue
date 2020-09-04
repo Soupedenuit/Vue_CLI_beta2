@@ -166,7 +166,7 @@
         // console.log('getting chess data');
       })
       .then(function() {
-        this1.interval_a = setInterval(this1.getChessData, 1000*60*5);
+        this1.interval_a = setInterval(this1.getChessData, 1000*60*3);
       })
     },
     beforeDestroy() {
@@ -180,7 +180,7 @@
     },
     activated() {
       if (!this.activated) {
-        this.interval_a = setInterval(this.getChessData, 1000*60*5)
+        this.interval_a = setInterval(this.getChessData, 1000*60*3)
         console.log('interval_a was reactivated');
       }
       this.activated = true;
