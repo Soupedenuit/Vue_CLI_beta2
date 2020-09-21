@@ -20,19 +20,19 @@ const routes = [
     path: '/login',
     name: 'login',
     component: VuetifyLogIn,
-    props: true,
+    props: false,
   },
   {
     path: '/home',
     name: 'home',
     component: Home,
-    props: true,
+    props: false,
     meta: { requiresAuth: true }
   },
   {
     path: '/signin',
     name: 'signin',
-    props: true,
+    props: false,
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -42,14 +42,14 @@ const routes = [
   {
     path: '/canvas',
     name: 'canvas',
-    props: true,
+    props: false,
     component: () =>
       import('../views/Canvas_view.vue')
   },
   {
     path: '/video1',
     name: 'video1',
-    props: true,
+    props: false,
     component: () =>
       import('../views/Video1_view.vue'),
     meta: { requiresAuth: true }
@@ -57,7 +57,7 @@ const routes = [
   {
     path: '/blog_entry',
     name: 'blog_entry',
-    props: true,
+    props: false,
     component: () =>
       import('../views/BlogEntry_view.vue'),
     meta: { requiresAuth: false }
@@ -65,7 +65,7 @@ const routes = [
   {
     path: '/blog_view',
     name: 'blog_view',
-    props: true,
+    props: false,
     component: () =>
       import('../views/BlogView_view.vue'),
     meta: { requiresAuth: true }
@@ -73,7 +73,7 @@ const routes = [
   {
     path: '/chess',
     name: 'chess',
-    props: true,
+    props: false,
     component: () =>
       import('../views/Chess_view.vue'),
     meta: { requiresAuth: false }

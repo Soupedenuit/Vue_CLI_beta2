@@ -48,7 +48,7 @@ function checkIfObject(obj) {
 function sortObjectByKeys(obj, evalKey) {
   if (checkIfObject(obj)) {
     let valType;
-    evalKey.match('Date') ?
+    evalKey.match('date') ?
     valType = 'date' :
     null;
     let sortedObj = {};

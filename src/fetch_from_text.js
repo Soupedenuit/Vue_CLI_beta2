@@ -14,6 +14,7 @@ function populateTarget(urlType) {
     let request = fetch(url);
     request.then(function(result) {
       // console.log(target);
+      console.log(result);
       if (urlType == 'text') {
         return result.text()
       } else return result.json()

@@ -9,44 +9,10 @@ const chessAPI = new ChessWebAPI({
 
 // Chess.com's API doesn't rate limit unless you've made parallel requests. If you have more than two active requests at a time, you'll receive a "429 Too Many Requests" error.
 
-function printLatestGamesData(response, error, gameType) {
-  const result = response.body;
-  let game = result[gameType];
-  let latestRating = game.last.rating;
-  let latestDate = new Date(game.last.date * 1000)
-  .toString().substring(0,21);
-  let latestGlickoRD = game.last.rd;
-  let bestRating = game.best.rating;
-  let bestDate = new Date(game.best.date * 1000)
-  .toString().substring(0,21);
-  let displayItems = {
-    'game type': gameType,
-    latestRating,
-    latestDate,
-    latestGlickoRD,
-    bestRating,
-    bestDate
-  };
-  for (let item in displayItems) {
-    console.log(`${item}: ${displayItems[item]}`)
-  }
-  //#region <unused code>
-  // console.log(`game type: ${gameType}`);
-  // console.log(`latest rating: ${latestRating}`);
-  // console.log(`latest date: ${latestDate}`);
-  // console.log(`latest GlickoRD: ${latestGlickoRD}`);
-  // console.log(`best rating: ${bestRating}`);
-  // console.log(`best rating date: ${bestDate}`);
-  //#endregion
-}
-// chessAPI.dispatch(chessAPI.getPlayerStats, printLatestGamesData, ["knightofthedead"], {}, 1, ["chess_bullet"])
-
-//////////////////////////////////////////////////////////
-
 let outsideResolve;
 let outsideReject;
 
-function getLatestGamesData(response, error) {
+function processChessData(response, error) {
   if (!error && response.statusCode === 200) {
     const result = response.body;
     // console.log(result);
@@ -104,13 +70,13 @@ function fetchChessAPIData(username) {
   return new Promise(function(resolve, reject) { 
     outsideResolve = resolve;
     outsideReject = reject;
-    chessAPI.dispatch(chessAPI.getPlayerStats, getLatestGamesData, [username], {}, 1, [])
+    chessAPI.dispatch(chessAPI.getPlayerStats, processChessData, [username], {}, 1, [])
   })
 }
 
 async function getChessAPIData(username) {
   // chessData will be either result or error
-  // obtained from getLatestGamesData()
+  // obtained from processChessData()
   let chessData = await fetchChessAPIData(username);
   console.log('chessData obtained from async function: ', chessData);
   return chessData

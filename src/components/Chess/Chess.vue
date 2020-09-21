@@ -2,38 +2,52 @@
   <main>
     <!-- switched to using a prop -->
     <!-- <input type="text" autocomplete="on" v-model="username"  -->
-    <form action="" method="" autocomplete="on">
+    <form>
       <label for="userNameInput">Username: </label>
       <input name="userNameInput" type="text" autocomplete="on" 
       v-model="userName" 
       v-on:keydown.enter.prevent="getChessData">
       <!-- <select name="userName" id="user-name" v-on:keydown.enter.prevent="getChessData">
         <option value="knightofthedead">knightofthedead</option>
-        <option value="sstoehr">sstoehr</option>
       </select> -->
     </form>
 
-    <article ref="chessGames" v-for="(game, index) in chessDataResult"
-    v-bind:key="index" >
+    <article ref="chessGames" v-if="showData">
       <span id="userDisplay">user: {{userName}}</span>
-      <h2>{{index}}</h2>
-      <ul v-if="showData">
-        <li ref="chessData" v-for="(stat, index) in game"
-        v-bind:key="index" >
-        {{index}}: {{stat}}
-        </li>
-      </ul>
-      <p v-if="showError">
-        {{game}}
-      </p>
+      <section v-for="(game, key, index) in chessData"
+      v-bind:key="key">
+        <h2>{{filterKey(key)}}</h2>
+        <ul v-if="showData">
+          <li ref="chessData" v-for="(stat, key) in game"
+          v-bind:key="key" >
+          {{key}}: {{stat}}
+          </li>
+        </ul>
+        <hr v-if="index < (Object.keys(chessData).length - 1)">
+      </section>
     </article>
+
+    <article v-if="showError">
+      <section class="margin-top-10"
+      v-for="(message, key) in errorData"
+      v-bind:key="key">
+      {{key}}: {{message}}
+      </section>
+    </article>
+
   </main>
 
 </template>
 
 
 <script>
-  import getChessAPIData from './Chess.com_API.js';
+  // Using ChessWebAPI:
+  // import {getChessAPIData} from './Chess.com_API.js';
+  // Using local Object for testing:
+  // import {getChessAPIData} from './Chess.com_API_simple.js';
+  // Using chess.com API endpoints without ChessWebAPI:
+  import {getChessDataWithFetch, getChessDataWithXHR} from './Chess.com_no_lib.js';
+  // import {getChessDataWithXHR} from './Chess.com_no_lib.js';
   import {convertToUTC} from '@/dateConverter.js';
   import {sortObjectByKeys} from '@/object_sort.js';
   import {nextTick} from 'vue';
@@ -43,6 +57,7 @@
     data: () => ({
       chessData: null,
       showData: false,
+      errorData: null,
       showError: true,
       interval_a: null,
       activated: true, //to prevent activated hook from setting interval on initial load
@@ -53,46 +68,51 @@
       user: String
     },
     computed: {
-      // userName: {
-      //   get() {
-      //     return this.user
-      //   },
-      //   set(val) {
-      //     this.user = val
-      //   }
-      // },
-      chessDataResult() {
-        if (this.chessData) {
-          //this doesn't do anything, as getChessAPIData() always returns a result or an error, and this.chessData will be this result or error - see **
-          if (this.chessData.error) {
-            let errorMessage = {
-              statusCode: this.chessData.statusCode,
-              test: 'yoyo'
-            }
-            this.showData = false;
-            this.showError = true;
-            // return errorMessage;
-            return this.chessData;
-          } 
-          // ** it will always be else here:
-          else {
-              this.showData = true;
-              this.showError = false;
-              return this.chessData;
-          } 
-        } else return {pending: 'data being retrieved...'}
-      }
+      // chessDataResult() {
+      //   if (this.chessData) {
+      //     if (this.chessData.hasOwnProperty('error')) {
+      //       let errorData = {
+      //         message: this.chessData.message,
+      //         'error code': this.chessData.error,
+      //       };
+      //       this.showData = false;
+      //       this.showError = true;
+      //       this.errorData = errorData;
+      //     } 
+      //     else {
+      //       this.showData = true;
+      //       this.showError = false;
+      //       return this.chessData;
+      //     } 
+      //   } else return {pending: 'retrieving data...'}
+      // }
     },
     methods: {
+      filterKey(key) {
+        return key.replace('_', ' ')
+      },
       getUser() {
         this.userName = this.user;
       },
       getChessData() {
         let this1 = this;
         //switched to using a prop:
-        getChessAPIData(this.userName)
+        // Using ChessWebAPI:
+        // getChessAPIData(this.userName)
+        // Using chess.com API endpoints without ChessWebAPI:
+        // getChessDataWithFetch(this.userName)
+        getChessDataWithXHR(this.userName)
         .then(function(result) {
-          this1.chessData = result;
+          console.log('then called???????????????');
+          if (result.error) {
+            this1.errorData = result;
+            this1.showError = true;
+            this1.showData = false;
+          } else {
+            this1.chessData = result;
+            this1.showError = false
+            this1.showData = true;
+          }
         })
         .then(function() {
           this1.sortChessData( )
@@ -100,9 +120,10 @@
         .then(function() {
           this1.findLatestData()
         })
-        //this doesn't do anything, as getChessAPIData() always returns (a result or an error)
         .catch(function(error) {
-          this1.chessData = error
+          // console.log('was I called?????');
+          this1.errorData = error
+          console.log(this1.errorData);
         })
       },
       //for global access using "bluesky" variable
@@ -124,7 +145,7 @@
         let liTarget;
         let regx = /latestDate: /gi;
         liTags.forEach(function(li, index) {
-          if (li.innerText.match('latestDate')) {
+          if (li.innerText.match('latest date')) {
             let date = li.innerText.replace(regx, '');
             console.log(date)
             utcDate = convertToUTC(date);
@@ -138,7 +159,7 @@
         liTarget.style.fontWeight = 'bolder';
         // console.log(liTarget.parentNode.parentNode);
       },
-      sortChessData(evalKey = 'latestDate') {
+      sortChessData(evalKey = 'latest date') {
         let sortedChessData = sortObjectByKeys(this.chessData, evalKey);
         this.chessData = sortedChessData;
       }
@@ -227,7 +248,7 @@
     text-align: center;
     width: 50%;
     min-width: 500px;
-    border: 1px solid green;
+    /* border: 1px solid green; */
     margin-bottom: 5px;
     font-size: 1.2em;
     color: #ebecd0;
@@ -247,18 +268,29 @@
     padding-left: 0;
   }
 
+  hr {
+    width: 80%;
+    color: #ebecd0;
+    opacity: 0.5;
+    margin: 5px auto;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+
   @media (max-width: 1070px) {
     #userDisplay {
       display: none;
     }
   }
 
-    @media (max-width: 500px) {
-      article {
-        width: 100%;
-        min-width: unset;
-      }
+  @media (max-width: 500px) {
+    article {
+      width: 100%;
+      min-width: unset;
     }
+  }
 
 
 </style>

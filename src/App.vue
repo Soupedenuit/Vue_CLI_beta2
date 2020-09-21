@@ -241,7 +241,7 @@
       routerLink_canvas: state => state.routerLinks.canvas,
       routerLink_video1: state => state.routerLinks.video1,
       routerLink_signin: state => state.routerLinks.signin,
-      routerLink_chess: state => state.routerLinks.pdf1,
+      routerLink_chess: state => state.routerLinks.chess,
       loginText: state=>state.users.user.email,
       loginStatus: function(state) {
         let text;
@@ -252,7 +252,7 @@
       }
     }),
     methods: {
-      getDeactivatedStatus: function(entry) {
+      getDeactivatedStatus(entry) {
         // console.log(entry);
         return this[entry]
       },
@@ -343,7 +343,7 @@
 
   .slide-enter-active, .slide-leave-active {
     transition-property: transform;
-    transition-duration: 200ms;
+    transition-duration: 100ms;
   }
 
   .slide-leave-to {

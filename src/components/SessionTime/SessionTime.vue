@@ -68,7 +68,7 @@ export default {
 
 #session-time {
   position: fixed;
-  /* z-index: 3; */
+  z-index: 3;
   font-size: 0.8em;
   font-weight: 500;
   width: 240px;
