@@ -46,8 +46,8 @@
   // Using local Object for testing:
   // import {getChessAPIData} from './Chess.com_API_simple.js';
   // Using chess.com API endpoints without ChessWebAPI:
-  import {getChessDataWithFetch, getChessDataWithXHR} from './Chess.com_no_lib.js';
-  // import {getChessDataWithXHR} from './Chess.com_no_lib.js';
+  // import {getChessAPIDataWithFetch, getChessAPIDataWithXHR} from './Chess.com_no_lib.js';
+  import {getChessAPIData} from './Chess.com_no_lib.js';
   import {convertToUTC} from '@/dateConverter.js';
   import {sortObjectByKeys} from '@/object_sort.js';
   import {nextTick} from 'vue';
@@ -96,14 +96,9 @@
       },
       getChessData() {
         let this1 = this;
-        //switched to using a prop:
-        // Using ChessWebAPI:
-        // getChessAPIData(this.userName)
-        // Using chess.com API endpoints without ChessWebAPI:
-        // getChessDataWithFetch(this.userName)
-        getChessDataWithXHR(this.userName)
+        getChessAPIData(this.userName.trim())
         .then(function(result) {
-          console.log('then called???????????????');
+          // console.log('then called?');
           if (result.error) {
             this1.errorData = result;
             this1.showError = true;
@@ -120,8 +115,7 @@
         .then(function() {
           this1.findLatestData()
         })
-        .catch(function(error) {
-          // console.log('was I called?????');
+        .catch(function(error) { // do we even get here ever?
           this1.errorData = error
           console.log(this1.errorData);
         })
@@ -138,12 +132,12 @@
         this.chessData = val;
       },
       findLatestData() {
-        let liTags = this.$refs.chessData;
-        let latestDateIndex = 0;
-        let latestUtcDate = 0;
-        let utcDate;
-        let liTarget;
-        let regx = /latestDate: /gi;
+        let liTags = this.$refs.chessData,
+            latestDateIndex = 0,
+            latestUtcDate = 0,
+            utcDate,
+            liTarget,
+            regx = /latest date: /gi;
         liTags.forEach(function(li, index) {
           if (li.innerText.match('latest date')) {
             let date = li.innerText.replace(regx, '');
@@ -176,7 +170,7 @@
       bluesky.interval_a = this.retrieveInterval_a;
       bluesky.chessDataSet = this.setLocalChessData;
       bluesky.findLatestData = this.findLatestData;
-      bluesky.chessDataSort = this.sortChessData;
+      // bluesky.chessDataSort = this.sortChessData;
     },
     mounted() {
       let this1 = this;

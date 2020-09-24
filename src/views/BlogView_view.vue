@@ -8,7 +8,7 @@
 
 
 <script>
-import {populateTarget, lastUpdated} from '@/fetch_from_text.js';
+import {populateTargetWithFetch, populateTargetWithXHR, lastUpdated} from '@/getBlogData.js';
 
 export default {
   data: ()=> ({
@@ -18,7 +18,7 @@ export default {
   methods: {
     populateContent: function() {
       let this1 = this;
-      populateTarget('json')
+      populateTargetWithXHR('json')
       .then(function(result) {
         this1.content = result;
         this1.updatedTime = lastUpdated();  //non-promise function

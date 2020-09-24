@@ -1,7 +1,19 @@
 <template>
+
+  <div>
+  <button id="toggle-view-btn" @click="toggleView">
+    {{toggleViewBtnTxt}}
+  </button>
+
   <main id="blog" class="container t-flex">
 
-    <div class="pos-relative sub-container t-flex">
+    
+    <div id="blog-entry" 
+    class="sub-container pos-relative"
+    :class="{
+      'display-none': !blogEntryDisplay,
+      't-flex': blogEntryDisplay
+    }">
       <span class="btn-container">
         <button class="btn" v-on:click="toggleTagsList" tabindex="0">tags<br><span class="small">CTRL-G</span></button>
         <button class="btn" v-on:click="populateTextarea" tabindex="0">retrieve<br><span class="small">CTRL-SPACE</span></button>
@@ -67,9 +79,14 @@
       
     </div>
 
-    <div class="sub-container t-flex">
+    <div id="blog-preview" 
+    class="sub-container"
+    :class="{
+      'display-none': !blogPreviewDisplay,
+      't-flex': blogPreviewDisplay
+    }">
       <article>
-        <h1>My latest blog entry imported as HTML from Firebase Realtime Database</h1>
+        <h1>My blog entry preview</h1>
         <aside id="update-status" class="size_08" >
           {{articleUpdateStatus1}}<br>
           <span v-bind:class="{colorRed: displayRedStyle}"> {{articleUpdateStatus2}}</span>
@@ -80,6 +97,7 @@
     </div>
 
   </main>
+  </div>
 
 </template>
 
@@ -100,6 +118,8 @@
     // name: 'BlogEntry',
     data: () => ({
       blogText: '',
+      blogEntryDisplay: true,
+      blogPreviewDisplay: false,
       displayList: false,
       displayRedStyle: true,
       test: 'hello',
@@ -133,6 +153,9 @@
     computed: {
       nonClosingTags: function() {  //UNUSED
         return this.tagsList.filter((x)=>x.nonClosing == true)
+      },
+      toggleViewBtnTxt: function() {
+        return this.blogEntryDisplay ? 'blog preview' : 'blog entry';
       },
       ...mapState({
         blog_article: 'blog_article', 
@@ -211,6 +234,10 @@
         let svgIcon = svgIcons('openInNew2');
         let tag = {tag: '<a></a>', text: svgIcon, atEnd: false};
         this.tagsList.push(tag)
+      },
+      toggleView: function() {
+        this.blogEntryDisplay = !this.blogEntryDisplay;
+        this.blogPreviewDisplay = !this.blogPreviewDisplay;
       }
     },
     watch: {
@@ -243,6 +270,23 @@
 
   @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Rubik:wght@400;500&display=swap');
 
+  #toggle-view-btn {
+    /* position: absolute; */
+    display: block;
+    /* top: 100px; */
+    /* left: 15px; */
+    margin: 0 auto;
+    padding: 3px;
+    color: var(--color2);
+    background-color: var(--backg4);
+    border: 1px solid #666;
+    border-radius: 4px;
+  }
+
+  #toggle-view-btn:focus {
+    outline: none;
+  }
+
   .pos-relative {
     position: relative;
   }
@@ -268,7 +312,7 @@
     flex-direction: column;
     justify-content: start;
     /* align-items: center; */
-    width: 48%;
+    width: 98%;
     /* height: 95%; */
     height: fit-content;
     background-color: mediumslateblue;
@@ -446,6 +490,12 @@
 
   #drag-grabber:active {
     transform: scale(1.2);
+  }
+
+  @media (max-width: 1070px) {
+  }
+
+  @media (max-width: 500px) {
   }
 
 

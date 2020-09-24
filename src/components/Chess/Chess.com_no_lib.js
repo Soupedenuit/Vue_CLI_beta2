@@ -1,12 +1,73 @@
-// const { default: getChessAPIData } = require("./Chess.com_API"); // how did this get here?
+if (!window) {
+  const fetch = require('node-fetch');
+}
 
 let outsideResolve;
 let outsideReject;
 
-function processChessData(data, message) {
-  console.log(data);
-  console.log(message);
-  console.log('processChessData called!');
+//determines which method to use to get data:
+function getChessAPIData(username) {
+  let url = `https://api.chess.com/pub/player/${username}/stats`;
+  return new Promise(function(resolve, reject) {
+    if (window.hasOwnProperty('fetch')) {
+      getChessAPIDataWithFetch(url, resolve, reject)
+    } else getChessAPIDataWithXHR(url, resolve, reject)
+  })
+}
+
+function getChessAPIDataWithFetch(url, resolve1, reject1) {
+  // return new Promise(function(resolve, reject) {
+    // outsideResolve = resolve;
+    console.log('fetch() method called!')
+    let message = 'data obtained via fetch()';
+    fetch(url)
+    .then(function(response) {
+      console.log('fetch.then called!')
+      let data = response.status === 200 ?
+      response.json() : null;
+      console.log(response)
+      console.log(data)
+      return response.ok ? data : Promise.reject(response) 
+      //Promise.reject forces catch() if response.ok is false
+    })
+    .then((data) => processChessData(data, message, resolve1))
+    .catch(function(response) {
+      console.log('fetch().catch() called!')
+      console.log('error: ', response.status)
+      processError(`response status ${response.status}`, reject1, 'error from fetch')
+    })
+  // })
+}
+
+function getChessAPIDataWithXHR(url, resolve1, reject1) {
+  // return new Promise(function(resolve, reject) {
+  //   outsideResolve = resolve;
+    console.log('XHR method called!');
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true)
+    xhr.onreadystatechange = function() {
+      // console.log(xhr.responseText)
+      if (xhr.readyState === xhr.DONE) { //value: 4
+        let data = JSON.parse(xhr.responseText);
+        if (xhr.status === 200) {
+          console.log('ok, status 200')
+          let message = 'data obtained via XHR'
+          processChessData(data, message, resolve1)
+        } else {
+          // console.log(xhr.responseText)
+          console.log(data)
+          processError(data.message, reject1, 'error from xrh')
+        }
+      }
+    }
+    xhr.send(null)
+  // })
+}
+
+function processChessData(data, message, resolve) {
+  console.log('processChessData called!')
+  console.log('data: ', data)
+  console.log('message: ', message)
   let displayItems = {};
   let includedGames = ['chess_bullet', 'chess_blitz', 'chess_rapid', 'chess_daily', 'chess960_daily'];
   for (let game in data) {
@@ -29,60 +90,22 @@ function processChessData(data, message) {
       }
     }
   }
-  outsideResolve(displayItems)
+  // outsideResolve(displayItems)
+  resolve(displayItems)
 } 
 
-function getChessDataWithXHR(username) {
-  return new Promise(function(resolve, reject) {
-    outsideResolve = resolve;
-    const httpRequest = new XMLHttpRequest();
-    let url = `https://api.chess.com/pub/player/${username}/stats`;
-    httpRequest.open('GET', url, true)
-    httpRequest.send(null)
-    httpRequest.onreadystatechange = function() {
-      // console.log(httpRequest.responseText)
-      if (httpRequest.readyState === httpRequest.DONE) {
-        if (httpRequest.status === 200) {
-          console.log('ok, status 200');
-          let data = JSON.parse(httpRequest.responseText);
-          let message = 'data obtained via XHR'
-          processChessData(data, message)
-        }
-      }
-    }
-  })
-}
-
-function getChessDataWithFetch(username) {
-  // reject unused here - to follow up?
-  return new Promise(function(resolve, reject) {
-    outsideResolve = resolve;
-    // outsideReject = reject;
-    let url = `https://api.chess.com/pub/player/${username}/stats`;
-    // let url = 'https://jsonplaceholder.typicode.com/posts'
-    fetch(url)
-    .then(function(response) {
-      let data = response.status === 200 ?
-      response.json() : null;
-      console.log(response)
-      console.log(data)
-      return response.ok ? data : Promise.reject(response)
-    })
-    .then(function(data) {
-      processChessData(data)
-    })
-    .catch(function(error) {
-      console.log(error);
-      let errorData = {
-        error: true,
-        message: 'error retrieving data',
-        code: error.status,
-      }
-      reject(errorData) //reject of returned Promise, not of fetch(), just so we're not confused
-    })
-  })
+function processError(errorMsg, reject, other) {
+  console.log('processError called!')
+  console.log('errorMsg: ', errorMsg)
+  console.log(other);
+  let errorData = {
+    error: true,
+    message: errorMsg,
+    // code: errorMsg.status,
+  }
+  reject(errorData)
 }
 
 
-export {getChessDataWithFetch, getChessDataWithXHR};
-// export {getChessDataWithXHR};
+// export {getChessAPIDataWithFetch, getChessAPIDataWithXHR};
+export {getChessAPIData};

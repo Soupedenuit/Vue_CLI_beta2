@@ -2,18 +2,33 @@ if (!window) {
   const fetch = require('node-fetch');
 }
 
-// let url = './text.txt'; // cannot fetch locally
-let url_text = 'http://192.168.0.12:8081//text.txt';
 let url_json = 'https://vue-beta2.firebaseio.com/public/published/blog.json';
 
-function populateTarget(urlType) {
-  let url;
-  urlType == 'text' ? url = url_text : url = url_json;
+function populateTargetWithXHR() {
+  return new Promise(function(resolve, reject) {
+    const xhr = new XMLHttpRequest();
+    let url = url_json;
+    xhr.open('GET', url_json, true)
+    xhr.onreadystatechange = function() {
+      // console.log(xhr.responseText)
+      if (xhr.readyState === xhr.DONE) {
+        if (xhr.status === 200) {
+          console.log('ok, status 200');
+          let htmlString = JSON.parse(xhr.responseText);
+          resolve(htmlString)
+        }
+      }
+    }
+    xhr.send(null)
+  })
+}
+
+function populateTargetWithFetch(urlType) {
+  let url = urlType == 'text' ? url_text : url_json;
   let htmlString = '<p>test only</p>';
   return new Promise(function(resolve, reject) {
-    let request = fetch(url);
-    request.then(function(result) {
-      // console.log(target);
+    fetch(url)
+    .then(function(result) {
       console.log(result);
       if (urlType == 'text') {
         return result.text()
@@ -22,7 +37,7 @@ function populateTarget(urlType) {
     .then((data) => {
       // console.log(data);
       if (urlType == 'text') {
-        htmlString = addText(data); 
+        htmlString = addText(data);
       } else htmlString = data; // Firebase API
       resolve(htmlString)
     })
@@ -58,4 +73,4 @@ function lastUpdated() {
 }
 
 
-export {populateTarget, lastUpdated};
+export {populateTargetWithFetch, populateTargetWithXHR, lastUpdated};
