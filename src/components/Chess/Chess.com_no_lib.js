@@ -2,9 +2,6 @@ if (!window) {
   const fetch = require('node-fetch');
 }
 
-let outsideResolve;
-let outsideReject;
-
 //determines which method to use to get data:
 function getChessAPIData(username) {
   let url = `https://api.chess.com/pub/player/${username}/stats`;
@@ -16,8 +13,6 @@ function getChessAPIData(username) {
 }
 
 function getChessAPIDataWithFetch(url, resolve1, reject1) {
-  // return new Promise(function(resolve, reject) {
-    // outsideResolve = resolve;
     console.log('fetch() method called!')
     let message = 'data obtained via fetch()';
     fetch(url)
@@ -36,32 +31,28 @@ function getChessAPIDataWithFetch(url, resolve1, reject1) {
       console.log('error: ', response.status)
       processError(`response status ${response.status}`, reject1, 'error from fetch')
     })
-  // })
 }
 
 function getChessAPIDataWithXHR(url, resolve1, reject1) {
-  // return new Promise(function(resolve, reject) {
-  //   outsideResolve = resolve;
-    console.log('XHR method called!');
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true)
-    xhr.onreadystatechange = function() {
-      // console.log(xhr.responseText)
-      if (xhr.readyState === xhr.DONE) { //value: 4
-        let data = JSON.parse(xhr.responseText);
-        if (xhr.status === 200) {
-          console.log('ok, status 200')
-          let message = 'data obtained via XHR'
-          processChessData(data, message, resolve1)
-        } else {
-          // console.log(xhr.responseText)
-          console.log(data)
-          processError(data.message, reject1, 'error from xrh')
-        }
+  console.log('XHR method called!');
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true)
+  xhr.onreadystatechange = function() {
+    // console.log(xhr.responseText)
+    if (xhr.readyState === xhr.DONE) { //value: 4
+      let data = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) {
+        console.log('ok, status 200')
+        let message = 'data obtained via XHR'
+        processChessData(data, message, resolve1)
+      } else {
+        // console.log(xhr.responseText)
+        console.log(data)
+        processError(data.message, reject1, 'error from xrh')
       }
     }
-    xhr.send(null)
-  // })
+  }
+  xhr.send(null)
 }
 
 function processChessData(data, message, resolve) {
@@ -90,7 +81,6 @@ function processChessData(data, message, resolve) {
       }
     }
   }
-  // outsideResolve(displayItems)
   resolve(displayItems)
 } 
 
@@ -106,6 +96,26 @@ function processError(errorMsg, reject, other) {
   reject(errorData)
 }
 
+function getChessAPIUserAvatar(username) {
+  let url = `https://api.chess.com/pub/player/${username}`;
+  // let url = `https://api.chess.com/pub/player/sstoehr`;
+  return new Promise(function(resolve, reject) {
+    if (window.hasOwnProperty('fetch')) {
+      fetch(url)
+      .then(function(response) {
+        let data = response.status === 200 ?
+        response.json() : null;
+        console.log(data);
+        return response.ok ? data : Promise.reject(response)
+      })
+      .then((response) => resolve(response.avatar))
+      .catch(function(response) {
+        console.log('error: ', response.status)
+        reject('(avatar fetch failed!)')
+      })
+    } else null
+  })
+}
 
-// export {getChessAPIDataWithFetch, getChessAPIDataWithXHR};
-export {getChessAPIData};
+
+export {getChessAPIData, getChessAPIUserAvatar};

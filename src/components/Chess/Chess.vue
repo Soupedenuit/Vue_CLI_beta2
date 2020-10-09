@@ -2,21 +2,39 @@
   <main>
     <!-- switched to using a prop -->
     <!-- <input type="text" autocomplete="on" v-model="username"  -->
-    <form>
+    <form action="">
       <label for="userNameInput">Username: </label>
-      <input name="userNameInput" type="text" autocomplete="on" 
+      <input ref="userNameInput" id="userNameInput" name="userNameInput" type="text" autocomplete="off" 
+      spellcheck="false"
       v-model="userName" 
-      v-on:keydown.enter.prevent="getChessData">
+      @click="showNames = !showNames"
+      @keydown.enter.prevent="getChessData('addUser')">
+      <span v-show="showNames" id="userNames">
+        <ul>
+          <li class="hover-dark" 
+          v-for="name in userNames" 
+          :key="name"
+          @click="selectName(name)">
+            {{name}}
+          </li>
+        </ul>
+      </span>
       <!-- <select name="userName" id="user-name" v-on:keydown.enter.prevent="getChessData">
         <option value="knightofthedead">knightofthedead</option>
       </select> -->
     </form>
 
     <article ref="chessGames" v-if="showData">
-      <span id="userDisplay">user: {{userName}}</span>
+      <span id="userDisplay">user: {{displayedUserName}}
+        <br>
+        <img v-if="userAvatar" :src="userAvatar" :alt="altAvatarText" width="100">
+        <p v-if="!userAvatar" class="small">(no user avatar)</p>
+      </span>
+
       <section v-for="(game, key, index) in chessData"
       v-bind:key="key">
-        <h2>{{filterKey(key)}}</h2>
+        <!-- <h2>{{filterKey(key)}}</h2> -->
+        <h2>{{key.replace('_', ' ')}}</h2>
         <ul v-if="showData">
           <li ref="chessData" v-for="(stat, key) in game"
           v-bind:key="key" >
@@ -47,7 +65,7 @@
   // import {getChessAPIData} from './Chess.com_API_simple.js';
   // Using chess.com API endpoints without ChessWebAPI:
   // import {getChessAPIDataWithFetch, getChessAPIDataWithXHR} from './Chess.com_no_lib.js';
-  import {getChessAPIData} from './Chess.com_no_lib.js';
+  import {getChessAPIData, getChessAPIUserAvatar} from './Chess.com_no_lib.js';
   import {convertToUTC} from '@/dateConverter.js';
   import {sortObjectByKeys} from '@/object_sort.js';
   import {nextTick} from 'vue';
@@ -61,7 +79,16 @@
       showError: true,
       interval_a: null,
       activated: true, //to prevent activated hook from setting interval on initial load
-      userName: null
+      userName: null,
+      userNames: new Set([
+        'knightofthedead',
+        'sstoehr',
+      ]),
+      // localStorageUserNames: null,
+      showNames: false,
+      userAvatar: null,
+      altAvatarText: 'user avatar',
+      displayedUserName: ''
     }),
     props: {
       delay: String,
@@ -91,33 +118,74 @@
       filterKey(key) {
         return key.replace('_', ' ')
       },
-      getUser() {
-        this.userName = this.user;
+      selectName(name) {
+        this.userName = name;
+        this.showNames = false;
+        this.$refs.userNameInput.focus()
       },
-      getChessData() {
-        let this1 = this;
-        getChessAPIData(this.userName.trim())
+      addNameToUserNames() {
+        this.userNames.add(this.userName)
+      },
+      // only called on mounted()
+      getLocalStorageUserNames() {
+        let storedString = window.localStorage.getItem('chessUserNames');
+        let currentNames = Array.from(this.userNames);
+        if (storedString) {
+          let storedNames = JSON.parse(storedString).names;
+          console.log('storedNames: ', storedNames);
+          this.userNames = new Set(currentNames.concat(storedNames))
+        } 
+      },
+      // called when username entered in input field
+      setLocalStorageUserNames() {
+        console.log('called setLocalStorageUserNames()');
+        let currentNames = Array.from(this.userNames);
+        let storeObj = JSON.stringify({names: currentNames});
+        window.localStorage.setItem('chessUserNames', storeObj);
+      },
+      getUser() {
+        this.userName = this.user.trim();
+      },
+      displayUserName(userName) {
+        this.displayedUserName = this.userName;
+      },
+      getUserAvatar() {
+        let _this = this;
+        getChessAPIUserAvatar(this.userName)
+        .then(function(avatar) {
+          _this.userAvatar = avatar;
+          // the following is now redundant since we are using v-if for img tag
+          // avatar ? 
+          // _this.altAvatarText = 'user avatar':
+          // _this.altAvatarText = '(no user avatar)';
+        })
+        .catch((error) => _this.altAvatarText = error)
+      },
+      getChessData(addUser) {
+        if (addUser) {
+          this.addNameToUserNames()
+          this.setLocalStorageUserNames()
+        }
+        let _this = this;
+        getChessAPIData(this.userName)
         .then(function(result) {
-          // console.log('then called?');
           if (result.error) {
-            this1.errorData = result;
-            this1.showError = true;
-            this1.showData = false;
+            _this.errorData = result;
+            _this.showError = true;
+            _this.showData = false;
           } else {
-            this1.chessData = result;
-            this1.showError = false
-            this1.showData = true;
+            _this.chessData = result;
+            _this.showError = false
+            _this.showData = true;
           }
         })
-        .then(function() {
-          this1.sortChessData( )
-        })
-        .then(function() {
-          this1.findLatestData()
-        })
+        .then(_this.displayUserName)
+        .then(_this.getUserAvatar)
+        .then(_this.sortChessData)
+        .then(_this.findLatestData)
         .catch(function(error) { // do we even get here ever?
-          this1.errorData = error
-          console.log(this1.errorData);
+          _this.errorData = error
+          console.log(_this.errorData);
         })
       },
       //for global access using "bluesky" variable
@@ -132,12 +200,13 @@
         this.chessData = val;
       },
       findLatestData() {
-        let liTags = this.$refs.chessData,
-            latestDateIndex = 0,
-            latestUtcDate = 0,
-            utcDate,
-            liTarget,
-            regx = /latest date: /gi;
+        let 
+          liTags = this.$refs.chessData,
+          latestDateIndex = 0,
+          latestUtcDate = 0,
+          utcDate,
+          liTarget,
+          regx = /latest date: /gi;
         liTags.forEach(function(li, index) {
           if (li.innerText.match('latest date')) {
             let date = li.innerText.replace(regx, '');
@@ -173,15 +242,16 @@
       // bluesky.chessDataSort = this.sortChessData;
     },
     mounted() {
-      let this1 = this;
+      let _this = this;
       this.$nextTick()
       .then(function() {
-        this1.getChessData()
-        // console.log('this1: ', this1);
+        _this.getChessData()
+        _this.getLocalStorageUserNames()
+        // console.log('_this: ', _this);
         // console.log('getting chess data');
       })
       .then(function() {
-        this1.interval_a = setInterval(this1.getChessData, 1000*60*3);
+        _this.interval_a = setInterval(_this.getChessData, 1000*60*3);
       })
     },
     beforeDestroy() {
@@ -225,6 +295,10 @@
     padding: 10px 0 5px 0;
   }
 
+  form {
+    position: relative;
+  }
+
   label {
     color: #ebecd0;
   }
@@ -233,7 +307,27 @@
     background-color: #ebecd0;
     border: 1px solid #779556;
     margin-bottom: 10px;
-    padding-left: 2px;
+    padding-left: 5px;
+  }
+
+  #userNames {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    background-color: #ebecd0;
+    border: 1px solid #312e2b;
+    border-radius: 3px;
+    z-index: 1;
+  }
+
+  .hover-dark {
+    padding-left: 5px;
+  }
+
+  .hover-dark:hover {
+    background-color: hsl(60, 19%, 73%);
+    cursor:pointer;
   }
 
   article {
@@ -254,6 +348,7 @@
     top: 7px;
     left: 10px;
     font-size: 0.8em;
+    text-align: left;
   }
 
   ul {
@@ -272,6 +367,11 @@
   .margin-top-10 {
     margin-top: 10px;
   }
+
+  .small {
+    font-size: .8em;
+  }
+
 
   @media (max-width: 1070px) {
     #userDisplay {

@@ -21,6 +21,10 @@
         <button class="btn" v-on:click="expandTextarea('resize')" tabindex="0">resize</button>
         <button class="btn" v-on:click="expandTextarea('reset')" tabindex="0">scroll</button>
       </span>
+      <aside id="update-status2" class="" >
+          {{articleUpdateStatus1}}<br>
+          <span v-bind:class="{colorRed: displayRedStyle}"> {{articleUpdateStatus2}}</span>
+        </aside>
       <form>
         <label title="ctrl-space to retrieve current entry markup, ctrl-enter to submit" for="blog-text" >Enter blog markup:</label>
         <textarea id="blog-text" ref="textArea" name="blog-text" rows="20" cols="50" spellcheck="false" v-model="blogText" 
@@ -44,35 +48,28 @@
         </ul>
         <button id="close-list" tabindex="0" 
         v-on:click="toggleTagsList" >
-          <svg id="close-list-btn-svg-used" width="24" height="24" viewBox="0 0 24 24" >
+          <svg id="close-list-btn-svg-used" width="24" height="24" viewBox="0 0 24 24">
             <use xlink:href="#use1"></use>
           </svg>
         </button>
 
         <button id="drag-grabber" ref="drag_grabber"
         tabindex="0" >
-          <svg id="drag-grabber-btn-svg-used" width="24" height="24" viewBox="0 0 24 24" >
+          <svg id="drag-grabber-btn-svg-used" width="24" height="24" viewBox="0 0 24 24">
             <use xlink:href="#use2"></use>
           </svg>
         </button>
 
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"
-        v-on:click="toggleTagsList" >
-          <defs>
-            <g id="use1">
-              <path d="M0 0h24v24H0z" fill="none"/>
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </g>
-          </defs>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <symbol id="use1">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </symbol>
 
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-          <defs>
-            <g id="use2">
-              <path d="M0 0h24v24H0V0z" fill="none"/>
-              <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </g>
-          </defs>
+          <symbol id="use2">
+            <path d="M0 0h24v24H0V0z" fill="none"/>
+            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+          </symbol>
         </svg>
 
       </aside>
@@ -322,7 +319,7 @@
   form {
     /* display: flex; */
     flex-direction: column;
-    margin: 48px 7px 7px 7px;
+    margin: 7px 7px 7px 7px;
     padding: 10px;
     /* width: 45%;
     height: 95%; */
@@ -400,7 +397,7 @@
     margin-top: 5px;
   }
 
-  #update-status {
+  #update-status, #update-status2 {
     /* display: block; */
     /* position: absolute; */
     /* top: 55px; */
@@ -411,7 +408,7 @@
     /* width: 280px; */
     /* text-align: right; */
     text-align: center;
-    line-height: 1em;
+    line-height: 1.1em;
     height: 40px;
   }
 
