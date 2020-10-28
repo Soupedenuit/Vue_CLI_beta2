@@ -228,7 +228,7 @@
         } else el.style.height = 'initial';
       },
       addToTagslist: function() {
-        let svgIcon = svgIcons('openInNew2');
+        let svgIcon = svgIcons('openInNew');
         let tag = {tag: '<a></a>', text: svgIcon, atEnd: false};
         this.tagsList.push(tag)
       },

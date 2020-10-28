@@ -9,8 +9,12 @@
 
 <script>
 import {populateTargetWithFetch, populateTargetWithXHR, lastUpdated} from '@/getBlogData.js';
+// import openInNewIcon from '@/components/openInNew_icon.vue';
 
 export default {
+  // components: {
+  //   openInNewIcon
+  // },
   data: ()=> ({
     content: '',
     updatedTime: ''

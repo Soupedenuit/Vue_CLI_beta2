@@ -28,7 +28,7 @@
       <span id="userDisplay">user: {{displayedUserName}}
         <br>
         <img v-if="userAvatar" :src="userAvatar" :alt="altAvatarText" width="100">
-        <p v-if="!userAvatar" class="small">(no user avatar)</p>
+        <p v-if="!userAvatar" class="small">{{avatarText}}</p>
       </span>
 
       <section v-for="(game, key, index) in chessData"
@@ -87,6 +87,7 @@
       // localStorageUserNames: null,
       showNames: false,
       userAvatar: null,
+      avatarText: 'fetching avatar...',
       altAvatarText: 'user avatar',
       displayedUserName: ''
     }),
@@ -122,6 +123,7 @@
         this.userName = name;
         this.showNames = false;
         this.$refs.userNameInput.focus()
+        this.getChessData()
       },
       addNameToUserNames() {
         this.userNames.add(this.userName)
@@ -154,6 +156,7 @@
         getChessAPIUserAvatar(this.userName)
         .then(function(avatar) {
           _this.userAvatar = avatar;
+          !avatar ? _this.avatarText = '(no avatar found)': null;
           // the following is now redundant since we are using v-if for img tag
           // avatar ? 
           // _this.altAvatarText = 'user avatar':
@@ -166,6 +169,7 @@
           this.addNameToUserNames()
           this.setLocalStorageUserNames()
         }
+        this.userAvatar = null;
         let _this = this;
         getChessAPIData(this.userName)
         .then(function(result) {
