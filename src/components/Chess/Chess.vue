@@ -4,12 +4,17 @@
     <!-- <input type="text" autocomplete="on" v-model="username"  -->
     <form action="">
       <label for="userNameInput">Username: </label>
-      <input ref="userNameInput" id="userNameInput" name="userNameInput" type="text" autocomplete="off" 
-      spellcheck="false"
-      v-model="userName" 
-      @click="showNames = !showNames"
-      @keydown.enter.prevent="getChessData('addUser')">
-      <span v-show="showNames" id="userNames">
+      <input id="userNameInput" 
+        type="text" 
+        name="userNameInput" 
+        ref="userNameInput" 
+        autocomplete="off" 
+        spellcheck="false"
+        v-model="userName" 
+        @click="showNames = !showNames"
+        @keydown.enter.prevent="getChessData('addUser')"
+      >
+      <span id="userNames" v-show="showNames">
         <ul>
           <li class="hover-dark" 
           v-for="name in userNames" 
@@ -25,20 +30,36 @@
     </form>
 
     <article ref="chessGames" v-if="showData">
-      <span id="userDisplay">user: {{displayedUserName}}
-        <br>
-        <img v-if="userAvatar" :src="userAvatar" :alt="altAvatarText" width="100">
-        <p v-if="!userAvatar" class="small">{{avatarText}}</p>
-      </span>
+      <div id="userDisplay">
+        <p>
+          Chess.com user:
+        </p> 
+        <p>
+          {{displayedUserName}}
+        </p>
+        <img 
+          v-if="userAvatar" 
+          :src="userAvatar" 
+          :alt="altAvatarText" 
+          width="100" height="100"
+        >
+        <p 
+          v-if="!userAvatar" 
+          class="small">{{avatarText}}
+        </p>
+      </div>
 
       <section v-for="(game, key, index) in chessData"
       v-bind:key="key">
         <!-- <h2>{{filterKey(key)}}</h2> -->
         <h2>{{key.replace('_', ' ')}}</h2>
         <ul v-if="showData">
-          <li ref="chessData" v-for="(stat, key) in game"
-          v-bind:key="key" >
-          {{key}}: {{stat}}
+          <li 
+            ref="chessData" 
+            v-for="(stat, key) in game"
+            v-bind:key="key" 
+          >
+            {{key}}: {{stat}}
           </li>
         </ul>
         <hr v-if="index < (Object.keys(chessData).length - 1)">
@@ -46,9 +67,11 @@
     </article>
 
     <article v-if="showError">
-      <section class="margin-top-10"
-      v-for="(message, key) in errorData"
-      v-bind:key="key">
+      <section 
+        class="margin-top-10"
+        v-for="(message, key) in errorData"
+        v-bind:key="key"
+      >
       {{key}}: {{message}}
       </section>
     </article>
@@ -65,10 +88,10 @@
   // import {getChessAPIData} from './Chess.com_API_simple.js';
   // Using chess.com API endpoints without ChessWebAPI:
   // import {getChessAPIDataWithFetch, getChessAPIDataWithXHR} from './Chess.com_no_lib.js';
-  import {getChessAPIData, getChessAPIUserAvatar} from './Chess.com_no_lib.js';
-  import {convertToUTC} from '@/dateConverter.js';
-  import {sortObjectByKeys} from '@/object_sort.js';
-  import {nextTick} from 'vue';
+  import { getChessAPIData, getChessAPIUserAvatar, getChessAPIUserAvatarWithXHR } from './Chess.com_no_lib.js';
+  import { convertToUTC } from '@/dateConverter.js';
+  import { sortObjectByKeys } from '@/object_sort.js';
+  import { nextTick } from 'vue';
 
   export default {
     name: 'Chess',
@@ -96,24 +119,6 @@
       user: String
     },
     computed: {
-      // chessDataResult() {
-      //   if (this.chessData) {
-      //     if (this.chessData.hasOwnProperty('error')) {
-      //       let errorData = {
-      //         message: this.chessData.message,
-      //         'error code': this.chessData.error,
-      //       };
-      //       this.showData = false;
-      //       this.showError = true;
-      //       this.errorData = errorData;
-      //     } 
-      //     else {
-      //       this.showData = true;
-      //       this.showError = false;
-      //       return this.chessData;
-      //     } 
-      //   } else return {pending: 'retrieving data...'}
-      // }
     },
     methods: {
       filterKey(key) {
@@ -122,8 +127,9 @@
       selectName(name) {
         this.userName = name;
         this.showNames = false;
-        this.$refs.userNameInput.focus()
+        // this.$refs.userNameInput.focus()
         this.getChessData()
+        this.$refs.userNameInput.blur()
       },
       addNameToUserNames() {
         this.userNames.add(this.userName)
@@ -148,7 +154,7 @@
       getUser() {
         this.userName = this.user.trim();
       },
-      displayUserName(userName) {
+      displayUserName() {
         this.displayedUserName = this.userName;
       },
       getUserAvatar() {
@@ -156,7 +162,10 @@
         getChessAPIUserAvatar(this.userName)
         .then(function(avatar) {
           _this.userAvatar = avatar;
-          !avatar ? _this.avatarText = '(no avatar found)': null;
+          !avatar ? 
+          _this.avatarText = '(no avatar found)': 
+          // _this.avatarText = 'fetching avatar...';
+          null;
           // the following is now redundant since we are using v-if for img tag
           // avatar ? 
           // _this.altAvatarText = 'user avatar':
@@ -170,6 +179,7 @@
           this.setLocalStorageUserNames()
         }
         this.userAvatar = null;
+        this.avatarText = 'fetching avatar...';
         let _this = this;
         getChessAPIData(this.userName)
         .then(function(result) {
@@ -339,7 +349,7 @@
     position: relative;
     text-align: center;
     width: 50%;
-    min-width: 500px;
+    min-width: 700px;
     /* border: 1px solid green; */
     margin-bottom: 5px;
     font-size: 1.2em;
@@ -347,11 +357,12 @@
     background-color: #779556;
   }
 
-  article span {
+  #userDisplay {
     position: absolute;
-    top: 7px;
+    top: 10px;
     left: 10px;
     font-size: 0.8em;
+    line-height: .3em;
     text-align: left;
   }
 
@@ -379,14 +390,18 @@
 
   @media (max-width: 1070px) {
     #userDisplay {
-      display: none;
+      /* display: none; */
+      position: unset;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.75em;
     }
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 700px) {
     article {
-      width: 100%;
       min-width: unset;
+      width: 100%;
     }
   }
 

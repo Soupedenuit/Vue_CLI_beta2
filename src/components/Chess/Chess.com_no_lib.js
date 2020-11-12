@@ -14,14 +14,14 @@ function getChessAPIData(username) {
 
 function getChessAPIDataWithFetch(url, resolve1, reject1) {
     console.log('fetch() method called!')
-    let message = 'data obtained via fetch()';
+    let message = 'chess data obtained via fetch()';
     fetch(url)
     .then(function(response) {
       console.log('fetch.then called!')
       let data = response.status === 200 ?
       response.json() : null;
-      console.log(response)
-      console.log(data)
+      // console.log(response)
+      // console.log(data)
       return response.ok ? data : Promise.reject(response) 
       //Promise.reject forces catch() if response.ok is false
     })
@@ -43,7 +43,7 @@ function getChessAPIDataWithXHR(url, resolve1, reject1) {
       let data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {
         console.log('ok, status 200')
-        let message = 'data obtained via XHR'
+        let message = 'chess data obtained via XHR';
         processChessData(data, message, resolve1)
       } else {
         // console.log(xhr.responseText)
@@ -96,26 +96,55 @@ function processError(errorMsg, reject, other) {
   reject(errorData)
 }
 
+//determines which method to use to get avatar:
 function getChessAPIUserAvatar(username) {
   let url = `https://api.chess.com/pub/player/${username}`;
   // let url = `https://api.chess.com/pub/player/sstoehr`;
   return new Promise(function(resolve, reject) {
     if (window.hasOwnProperty('fetch')) {
-      fetch(url)
-      .then(function(response) {
-        let data = response.status === 200 ?
-        response.json() : null;
-        console.log(data);
-        return response.ok ? data : Promise.reject(response)
-      })
-      .then((response) => resolve(response.avatar))
-      .catch(function(response) {
-        console.log('error: ', response.status)
-        reject('(avatar fetch failed!)')
-      })
-    } else null
+      getChessAPIUserAvatarWithFetch(url, resolve, reject)
+    } else getChessAPIUserAvatarWithXHR(url, resolve, reject)
   })
 }
 
+function getChessAPIUserAvatarWithFetch(url, resolve1, reject1) {
+  fetch(url)
+  .then(function(response) {
+    let data = response.status === 200 ?
+    response.json() : null;
+    // console.log(data);
+    return response.ok ? data : Promise.reject(response)
+  })
+  .then((response) => resolve1(response.avatar))
+  .then(console.log('chess avatar obtained via fetch()'))
+  .catch(function(response) {
+    console.log('error: ', response.status)
+    reject1('(avatar fetch failed!)')
+  })
+}
 
-export {getChessAPIData, getChessAPIUserAvatar};
+function getChessAPIUserAvatarWithXHR(url, resolve1, reject1) {
+  // console.log('XHR method called!');
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true)
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === xhr.DONE) { //value: 4
+      let data = JSON.parse(xhr.responseText);
+      console.log({data});
+      let avatar = data.avatar;
+      if (xhr.status === 200) {
+        console.log('ok, status 200')
+        console.log('chess avatar obtained via XHR')
+        resolve1(avatar)
+      } else {
+        // console.log(xhr.responseText)
+        console.log(data)
+        reject1(data.message)
+      }
+    }
+  }
+  xhr.send(null)
+}
+
+
+export { getChessAPIData, getChessAPIUserAvatar, getChessAPIUserAvatarWithXHR };
